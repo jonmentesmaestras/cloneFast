@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Vision-to-Code Landing Builder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #1e293b;
+      --border: #334155;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+      --success: #10b981;
+      --danger: #ef4444;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); }
+    .app { display: grid; grid-template-columns: 380px 1fr; height: 100vh; }
+    .sidebar { background: var(--panel); border-right: 1px solid var(--border); padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
+    .preview { display: flex; flex-direction: column; }
+    .preview-header { padding: 10px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--panel); }
+    .preview-frame { flex: 1; border: none; width: 100%; background: white; }
+    h1 { font-size: 16px; margin: 0; font-weight: 600; }
+    h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin: 4px 0; }
+    .dropzone { border: 2px dashed var(--border); border-radius: 8px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.15s; background: rgba(99,102,241,0.04); }
+    .dropzone.drag { border-color: var(--accent); background: rgba(99,102,241,0.12); }
+    .dropzone p { margin: 0; color: var(--muted); font-size: 13px; }
+    .dropzone img { max-width: 100%; max-height: 140px; border-radius: 4px; }
+    textarea { width: 100%; min-height: 70px; resize: vertical; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 8px; font-family: inherit; font-size: 13px; }
+    button { background: var(--accent); color: white; border: none; padding: 10px 14px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; transition: background 0.15s; }
+    button:hover:not(:disabled) { background: var(--accent-hover); }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    button.secondary { background: var(--border); }
+    button.danger { background: var(--danger); }
+    .row { display: flex; gap: 8px; }
+    .row > * { flex: 1; }
+    .status { font-size: 12px; padding: 8px; border-radius: 4px; background: rgba(99,102,241,0.1); border-left: 3px solid var(--accent); white-space: pre-wrap; max-height: 200px; overflow-y: auto; }
+    .status.error { background: rgba(239,68,68,0.1); border-left-color: var(--danger); }
+    .status.success { background: rgba(16,185,129,0.1); border-left-color: var(--success); }
+    .sections-log { list-style: none; padding: 0; margin: 0; font-size: 12px; }
+    .sections-log li { padding: 6px 8px; background: var(--bg); border-radius: 4px; margin-bottom: 4px; color: var(--muted); }
+    .sections-log li::before { content: "✓ "; color: var(--success); }
+    .pill { display: inline-block; background: var(--bg); padding: 2px 8px; border-radius: 10px; font-size: 11px; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <h1>🎨 Landing Builder</h1>
+      <span class="pill" id="session-pill">Sin sesión</span>
+
+      <div>
+        <h2>1. Screenshot de la sección</h2>
+        <div class="dropzone" id="dropzone">
+          <p id="dropzone-text">Arrastra o haz clic para seleccionar un PNG</p>
+          <img id="preview-thumb" style="display:none" />
+        </div>
+        <input type="file" id="file-input" accept="image/png,image/jpeg" style="display:none" />
+      </div>
+
+      <div>
+        <h2>2. Contexto de marca (opcional)</h2>
+        <textarea id="brand-prompt" placeholder="Ej: tono cálido, profesional. Clínica estética premium para mujeres 35-55."></textarea>
+      </div>
+
+      <button id="add-btn" disabled>➕ Agregar Sección</button>
+
+      <div id="status" class="status" style="display:none"></div>
+
+      <div>
+        <h2>Secciones añadidas</h2>
+        <ul class="sections-log" id="sections-log"><li style="color:var(--muted)">(ninguna todavía)</li></ul>
+      </div>
+
+      <div class="row">
+        <button class="secondary" id="export-btn" disabled>⬇ Exportar HTML</button>
+        <button class="danger" id="reset-btn">↻ Nueva landing</button>
+      </div>
+    </aside>
+
+    <main class="preview">
+      <div class="preview-header">
+        <strong style="font-size:13px">Live Preview</strong>
+        <span class="pill" id="preview-stats">0 secciones · 0 imágenes</span>
+      </div>
+      <iframe class="preview-frame" id="preview-frame" src="about:blank"></iframe>
+    </main>
+  </div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+let sessionId = null;
+let selectedFile = null;
+
+async function newSession() {
+  const r = await fetch("/api/session/new", { method: "POST" });
+  const j = await r.json();
+  sessionId = j.session_id;
+  $("session-pill").textContent = "sesión " + sessionId.slice(0, 8);
+  $("sections-log").innerHTML = '<li style="color:var(--muted)">(ninguna todavía)</li>';
+  $("preview-stats").textContent = "0 secciones · 0 imágenes";
+  $("export-btn").disabled = true;
+  $("preview-frame").src = "about:blank";
+}
+
+function showStatus(msg, kind = "info") {
+  const s = $("status");
+  s.style.display = "block";
+  s.className = "status " + (kind === "error" ? "error" : kind === "success" ? "success" : "");
+  s.textContent = msg;
+}
+
+function setFile(file) {
+  selectedFile = file;
+  $("preview-thumb").src = URL.createObjectURL(file);
+  $("preview-thumb").style.display = "block";
+  $("dropzone-text").style.display = "none";
+  $("add-btn").disabled = false;
+}
+
+const dz = $("dropzone");
+dz.addEventListener("click", () => $("file-input").click());
+dz.addEventListener("dragover", (e) => { e.preventDefault(); dz.classList.add("drag"); });
+dz.addEventListener("dragleave", () => dz.classList.remove("drag"));
+dz.addEventListener("drop", (e) => {
+  e.preventDefault();
+  dz.classList.remove("drag");
+  if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]);
+});
+$("file-input").addEventListener("change", (e) => {
+  if (e.target.files[0]) setFile(e.target.files[0]);
+});
+
+$("add-btn").addEventListener("click", async () => {
+  if (!selectedFile) return;
+  $("add-btn").disabled = true;
+  showStatus("⏳ Analizando screenshot, generando HTML e imágenes...");
+
+  const fd = new FormData();
+  fd.append("image", selectedFile);
+  fd.append("brand_prompt", $("brand-prompt").value);
+
+  try {
+    const r = await fetch(`/api/session/${sessionId}/section`, { method: "POST", body: fd });
+    if (!r.ok) {
+      const err = await r.json().catch(() => ({ detail: r.statusText }));
+      throw new Error(err.detail || "Error desconocido");
+    }
+    const j = await r.json();
+    const msg = `✓ Sección ${j.section_count} agregada (${j.new_images} imágenes nuevas, ${j.html_bytes} bytes)`
+      + (j.unfilled_placeholders?.length ? `\n⚠ Placeholders sin rellenar: ${j.unfilled_placeholders.join(", ")}` : "");
+    showStatus(msg, j.unfilled_placeholders?.length ? "info" : "success");
+
+    if ($("sections-log").firstChild?.textContent?.startsWith("(")) {
+      $("sections-log").innerHTML = "";
+    }
+    const li = document.createElement("li");
+    li.textContent = `Sección ${j.section_count}: ${selectedFile.name}`;
+    $("sections-log").appendChild(li);
+
+    $("preview-stats").textContent = `${j.section_count} secciones · ${j.image_count} imágenes`;
+    $("preview-frame").src = `/api/session/${sessionId}/preview?t=${Date.now()}`;
+    $("export-btn").disabled = false;
+
+    selectedFile = null;
+    $("preview-thumb").style.display = "none";
+    $("dropzone-text").style.display = "block";
+    $("file-input").value = "";
+  } catch (e) {
+    showStatus("✗ " + e.message, "error");
+  } finally {
+    $("add-btn").disabled = !selectedFile;
+  }
+});
+
+$("export-btn").addEventListener("click", () => {
+  window.location.href = `/api/session/${sessionId}/export`;
+});
+
+$("reset-btn").addEventListener("click", async () => {
+  if (sessionId) await fetch(`/api/session/${sessionId}`, { method: "DELETE" });
+  await newSession();
+  showStatus("Nueva sesión iniciada.", "success");
+});
+
+newSession();
+</script>
+</body>
+</html>

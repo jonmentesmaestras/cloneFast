@@ -1,0 +1,10 @@
+.env
+.venv/
+venv/
+__pycache__/
+*.pyc
+.mypy_cache/
+.pytest_cache/
+.DS_Store
+node_modules/
+UNUSED/
