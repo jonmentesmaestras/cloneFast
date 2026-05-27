@@ -6,6 +6,7 @@ Single-user PoC — sessions live in memory and reset on restart.
 from __future__ import annotations
 
 import asyncio
+import functools
 import logging
 import re
 import uuid
@@ -19,7 +20,7 @@ from fastapi.responses import FileResponse, HTMLResponse, Response
 
 load_dotenv()
 
-from backend.gemini import GeminiSession, build_client  # noqa: E402
+from backend.gemini_openai import GeminiSession, build_client  # noqa: E402
 from backend.s3 import upload_image  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
@@ -52,6 +53,10 @@ class Workspace:
             "html": "",
             "image_count": 0,
             "section_count": 0,
+            "image_urls": {},       # marker_index (int) -> S3 URL
+            "scaffold_open": "",    # everything before <!-- SECTION_START --> in section 1
+            "scaffold_close": "",   # everything after <!-- SECTION_END --> in section 1
+            "sections_html": "",    # accumulated fragment content between sentinels
         }
         return sid
 
@@ -137,17 +142,56 @@ async def session_add_section(
     try:
         section = await loop.run_in_executor(
             _executor,
-            s["gemini"].add_section,
-            image_bytes,
-            brand_prompt,
+            functools.partial(
+                s["gemini"].add_section,
+                image_bytes,
+                brand_prompt,
+                s["image_count"],   # next_marker_index
+            ),
         )
     except Exception as e:
         log.exception("Gemini text call failed")
         raise HTTPException(status_code=502, detail=f"Gemini text generation failed: {e}")
 
-    html = section.html
     new_images = section.image_prompts
     base_index = s["image_count"]
+    is_first_section = s["section_count"] == 0
+
+    # Extract section fragment using sentinel comments
+    START_SENTINEL = "<!-- SECTION_START -->"
+    END_SENTINEL = "<!-- SECTION_END -->"
+    raw_html = section.html
+
+    if START_SENTINEL in raw_html and END_SENTINEL in raw_html:
+        start_idx = raw_html.index(START_SENTINEL)
+        end_idx = raw_html.index(END_SENTINEL)
+        fragment = raw_html[start_idx + len(START_SENTINEL):end_idx]
+        if is_first_section:
+            s["scaffold_open"] = raw_html[:start_idx]
+            s["scaffold_close"] = raw_html[end_idx + len(END_SENTINEL):]
+            log.info("Scaffold captured: open=%d chars, close=%d chars",
+                     len(s["scaffold_open"]), len(s["scaffold_close"]))
+    else:
+        log.warning("Sentinel comments missing — using full response as fragment for section %d",
+                    s["section_count"] + 1)
+        fragment = raw_html
+        if is_first_section:
+            s["scaffold_open"] = ""
+            s["scaffold_close"] = ""
+
+    # Diagnostic logging
+    log.info("=== DIAGNOSTIC: Section #%d ===", s["section_count"] + 1)
+    for offset, spec in enumerate(new_images):
+        prompt_preview = spec["prompt"][:150].replace("\n", " ")
+        log.info("  Image[%d] (marker __IMG_%d__): aspect_ratio=%s | prompt=%s...",
+                 offset, base_index + offset, spec.get("aspect_ratio", "unknown"), prompt_preview)
+    img_count = fragment.count("<img")
+    markers_in_fragment = re.findall(r"__IMG_\d+__", fragment)
+    unique_markers = list(dict.fromkeys(markers_in_fragment))
+    log.info("  Fragment: %d <img> tags, %d unique markers: %s", img_count, len(unique_markers), unique_markers)
+    if len(unique_markers) != len(new_images):
+        log.warning("  ⚠ SPEC/MARKER MISMATCH: %d specs vs %d unique markers", len(new_images), len(unique_markers))
+    log.info("=== END DIAGNOSTIC ===")
 
     log.info("Section returned %d new image specs (base index=%d)", len(new_images), base_index)
 
@@ -170,17 +214,23 @@ async def session_add_section(
             log.exception("Image generation/upload failed")
             raise HTTPException(status_code=502, detail=f"Image pipeline failed: {e}")
 
+        # Persist new URLs
         for marker_index, url in results:
-            placeholder = f"__IMG_{marker_index}__"
-            if placeholder not in html:
-                log.warning("Placeholder %s not found in returned HTML", placeholder)
-            html = html.replace(placeholder, url)
+            s["image_urls"][marker_index] = url
 
-    leftover = re.findall(r"__IMG_\d+__", html)
+        # Substitute only this section's markers in the fragment
+        for marker_index in range(base_index, base_index + len(new_images)):
+            if marker_index in s["image_urls"]:
+                placeholder = f"__IMG_{marker_index}__"
+                fragment = fragment.replace(placeholder, s["image_urls"][marker_index])
+
+    leftover = re.findall(r"__IMG_\d+__", fragment)
     if leftover:
-        log.warning("Unfilled placeholders remain: %s", leftover)
+        log.warning("Unfilled placeholders remain in fragment: %s", leftover)
 
-    s["html"] = html
+    # Append fragment and rebuild full HTML from scaffold + all fragments
+    s["sections_html"] += fragment
+    s["html"] = s["scaffold_open"] + s["sections_html"] + s["scaffold_close"]
     s["image_count"] = base_index + len(new_images)
     s["section_count"] += 1
 
@@ -188,7 +238,7 @@ async def session_add_section(
         "section_count": s["section_count"],
         "image_count": s["image_count"],
         "new_images": len(new_images),
-        "html_bytes": len(html),
+        "html_bytes": len(s["html"]),
         "unfilled_placeholders": leftover,
     }
 
