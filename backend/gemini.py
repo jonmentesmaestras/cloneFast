@@ -17,6 +17,7 @@ from google.genai import types
 
 
 TEXT_MODEL = "gemini-2.5-flash"
+#TEXT_MODEL = "gemini-3.5-flash"
 IMAGE_MODEL = "gemini-2.5-flash-image"
 
 # Two architectural rules. Everything else (fonts, colors, framework, layout)
