@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual de la Temporada de Peelings Químicos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            background-color: #F8F5EE; /* Main background color */
+            color: #4A4A4A;
+        }
+
+        .hero-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            min-height: 100vh; /* Ensure it takes full viewport height */
+            box-sizing: border-box;
+        }
+
+        .hero-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            width: 100%;
+        }
+
+        /* Mobile first image positioning (stacked) */
+        .hero-images {
+            display: flex;
+            flex-direction: column; /* Stack images vertically on mobile */
+            align-items: center;
+            gap: 20px; /* Space between stacked images */
+            width: 100%;
+            max-width: 300px; /* Max width for images block on mobile */
+            margin-bottom: 40px; /* Space before text content */
+        }
+
+        .ebook-mockup, .smartphone-mockup {
+            position: static; /* Default stacking behavior */
+            width: 100%; /* Take full width of parent on mobile */
+            height: auto;
+            z-index: auto; /* Reset z-index */
+            top: auto;
+            right: auto;
+            bottom: auto;
+            left: auto;
+            transform: none; /* Reset transforms */
+        }
+
+        .ebook-mockup {
+            width: 80%; /* Ebook slightly larger */
+        }
+        .smartphone-mockup {
+            width: 50%; /* Smartphone smaller */
+        }
+
+        .hero-text-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center align for mobile */
+            text-align: center; /* Center text for mobile */
+            gap: 20px;
+            max-width: 550px;
+        }
+
+        .hero-title {
+            font-size: 2.5rem; /* Adjust as needed */
+            font-weight: 700;
+            line-height: 1.2;
+            color: #4A4A4A;
+        }
+
+        .hero-paragraph {
+            font-size: 1rem;
+            line-height: 1.6;
+            font-weight: 400;
+            color: #4A4A4A;
+        }
+
+        .cta-button {
+            background-color: #40E0B8;
+            color: #FFFFFF;
+            padding: 15px 30px;
+            border-radius: 10px; /* Rounded corners */
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 700;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .cta-button:hover {
+            background-color: #36c7a2; /* Slightly darker on hover */
+        }
+
+        .cta-button span {
+            font-size: 0.8rem;
+            font-weight: 400;
+            margin-top: 5px;
+        }
+
+        /* Desktop Styles */
+        @media (min-width: 768px) {
+            .hero-content {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                gap: 80px;
+            }
+
+            .hero-images {
+                flex-direction: row; /* Reset flex direction, but we will use absolute positioning */
+                position: relative; /* Enable absolute positioning for children */
+                min-height: 500px; /* Define height for absolute positioning */
+                width: 50%;
+                max-width: 600px;
+                margin-bottom: 0; /* No margin-bottom on desktop */
+                display: block; /* To allow absolute positioning without flex interference */
+            }
+
+            .ebook-mockup {
+                position: absolute;
+                z-index: 1;
+                width: 70%; /* Adjust size */
+                top: 10%; /* Position relative to hero-images container */
+                right: 0; /* Align to the right */
+            }
+
+            .smartphone-mockup {
+                position: absolute;
+                z-index: 2;
+                width: 40%; /* Adjust size */
+                bottom: 10%; /* Position relative to hero-images container */
+                left: 0; /* Align to the left */
+            }
+
+            .hero-text-content {
+                width: 50%;
+                align-items: flex-start; /* Left align for desktop */
+                text-align: left; /* Left align text for desktop */
+            }
+
+            .hero-title {
+                font-size: 3.5rem; /* Larger for desktop */
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .hero-title {
+                font-size: 4rem; /* Even larger for larger screens */
+            }
+            .ebook-mockup {
+                width: 70%;
+            }
+            .smartphone-mockup {
+                width: 40%;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <section class="hero-section">
+        <div class="hero-content">
+            <div class="hero-images">
+                <img src="https://pulpo-landing-demo-9c9676.s3.amazonaws.com/landing-builder/8d762f0fafeb48c8aaa0108e141271b1.png" alt="Maqueta de libro electrónico con la portada 'Manual Temporada de Peelings Químicos'" class="ebook-mockup">
+                <img src="https://pulpo-landing-demo-9c9676.s3.amazonaws.com/landing-builder/3183e10f73d0416d8c383964a0838f03.png" alt="Maqueta de smartphone mostrando la portada del libro electrónico 'Manual Temporada de Peelings Químicos'" class="smartphone-mockup">
+            </div>
+            <div class="hero-text-content">
+                <h1 class="hero-title">Manual de la Temporada de <br>PEELINGS QUÍMICOS</h1>
+                <p class="hero-paragraph">Ha llegado la época ideal para tratar manchas, acné, melasma y signos de envejecimiento con máxima eficacia, y los peelings se convierten en el tratamiento estrella de los procedimientos estéticos. Son los más solicitados por las clientas.</p>
+                <a href="#" class="cta-button">
+                    SOLO R$19,90
+                    <span>PAGO ÚNICO</span>
+                </a>
+            </div>
+        </div>
+    </section>
+    
+<style>
+    .section-2 {
+        background-color: #FFFFFF;
+        padding: 80px 20px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 50vh;
+        box-sizing: border-box;
+    }
+
+    .section-2-content {
+        max-width: 800px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .section-2-title {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        line-height: 1.2;
+        color: #4A4A4A;
+        margin: 0;
+    }
+
+    .section-2-paragraph {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1rem;
+        line-height: 1.6;
+        font-weight: 400;
+        color: #4A4A4A;
+        margin: 0;
+    }
+
+    .section-2 .cta-button {
+        background-color: #40E0B8;
+        color: #FFFFFF;
+        padding: 15px 30px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.2rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s ease;
+        margin-top: 20px;
+    }
+
+    .section-2 .cta-button:hover {
+        background-color: #36c7a2;
+    }
+
+    .section-2 .price-text {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 0.9rem;
+        font-weight: 400;
+        color: rgba(74, 74, 74, 0.5);
+        margin-top: 10px;
+    }
+
+    .cookie-banner {
+        background-color: #2563EB;
+        color: #FFFFFF;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        box-sizing: border-box;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 0.85rem;
+        line-height: 1.4;
+        z-index: 1000;
+    }
+
+    .cookie-banner-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        max-width: 1200px;
+        width: 100%;
+    }
+
+    .cookie-text {
+        text-align: center;
+        margin: 0;
+        flex-grow: 1;
+    }
+
+    .cookie-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .cookie-button {
+        background-color: #10B981;
+        color: #FFFFFF;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 0.9rem;
+        font-weight: 400;
+        transition: background-color 0.3s ease;
+        white-space: nowrap;
+    }
+
+    .cookie-button:hover {
+        background-color: #0c8a60;
+    }
+
+    .cookie-icon {
+        width: 30px;
+        height: 30px;
+        flex-shrink: 0;
+    }
+
+    @media (min-width: 768px) {
+        .section-2-title {
+            font-size: 3.5rem;
+        }
+        .section-2-paragraph {
+            font-size: 1.1rem;
+        }
+        .cookie-banner {
+            flex-direction: row;
+            justify-content: center;
+            padding: 20px 40px;
+        }
+        .cookie-banner-content {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            text-align: left;
+        }
+        .cookie-text {
+            text-align: left;
+            max-width: 70%;
+        }
+        .cookie-actions {
+            margin-left: auto;
+        }
+    }
+</style>
+<section class="section-2">
+    <div class="section-2-content">
+        <h2 class="section-2-title">¿Estás lista para aprovechar este momento y ganar más con protocolos listos y seguros?</h2>
+        <p class="section-2-paragraph">Son 20 protocolos listos para que apliques con seguridad y resultados consistentes</p>
+        <a href="#" class="cta-button">DESCARGAR E-BOOK AHORA</a>
+        <p class="price-text">Solo R$19,90</p>
+    </div>
+</section>
+<div class="cookie-banner">
+    <div class="cookie-banner-content">
+        <p class="cookie-text">
+            Utilizamos cookies en nuestro sitio para recordar tus preferencias y ofrecerte una navegación más agradable durante tu visita. Al hacer clic en "Aceptar Todas", nos autorizas a utilizar TODAS las cookies. Sin embargo, puedes visitar nuestra página de "Configuración de Cookies" para autorizar el uso parcial de este recurso.
+        </p>
+        <div class="cookie-actions">
+            <a href="#" class="cookie-button">Aceptar Todas</a>
+            <img src="https://pulpo-landing-demo-9c9676.s3.amazonaws.com/landing-builder/1870337ea6e14d99abf17e1831faf9fa.png" alt="Icono circular de información en azul oscuro con un símbolo blanco" class="cookie-icon">
+        </div>
+    </div>
+</div>
+
+<style>
+    .section-3 {
+        background-color: #F8F5EE; /* Main background color */
+        padding: 80px 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+    }
+
+    .section-3-content {
+        display: flex;
+        flex-direction: column; /* Stack on mobile */
+        align-items: center;
+        gap: 40px;
+        max-width: 1200px;
+        width: 100%;
+    }
+
+    .section-3-text-column {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+        max-width: 600px;
+    }
+
+    .section-3-title {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 2.2rem;
+        font-weight: 700;
+        line-height: 1.2;
+        color: #4A4A4A;
+        margin: 0;
+    }
+
+    .section-3-paragraph {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1rem;
+        line-height: 1.6;
+        font-weight: 400;
+        color: #4A4A4A;
+        margin: 0;
+    }
+
+    .section-3 .download-button {
+        background-color: #40E0B8;
+        color: #FFFFFF;
+        padding: 15px 30px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.2rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s ease;
+        margin-top: 20px;
+    }
+
+    .section-3 .download-button:hover {
+        background-color: #36c7a2;
+    }
+
+    .section-3-image-column {
+        width: 100%;
+        max-width: 400px; /* Limit image width on mobile */
+        border-radius: 20px; /* Rounded corners for the image container */
+        overflow: hidden;
+    }
+
+    .section-3-image-column img {
+        width: 100%;
+        height: auto;
+        display: block;
+        object-fit: cover;
+    }
+
+    .section-3-bottom-title {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 2.2rem;
+        font-weight: 700;
+        line-height: 1.2;
+        color: #4A4A4A;
+        margin-top: 60px; /* Space from previous content */
+        text-align: center;
+        max-width: 800px;
+    }
+
+    @media (min-width: 768px) {
+        .section-3-content {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 60px;
+        }
+
+        .section-3-text-column {
+            text-align: left;
+            align-items: flex-start;
+            width: 50%;
+            max-width: none;
+        }
+
+        .section-3-title {
+            font-size: 3rem;
+        }
+
+        .section-3-image-column {
+            width: 50%;
+            max-width: 500px; /* Allow larger image on desktop */
+            border-top-left-radius: 20px;
+            border-top-right-radius: 100px; /* More rounded on top right */
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+
+        .section-3-bottom-title {
+            font-size: 3rem;
+            margin-top: 100px;
+        }
+    }
+</style>
+<section class="section-3">
+    <div class="section-3-content">
+        <div class="section-3-text-column">
+            <h2 class="section-3-title">¿Eres profesional de la estética y te has sentido perdida al elegir qué peeling químico aplicar?</h2>
+            <p class="section-3-paragraph">¿O quizás tuviste dudas sobre el porcentaje de cada activo, el modo de uso, los cuidados pre y post, el número de sesiones o incluso sobre la neutralización correcta?</p>
+            <a href="#" class="download-button">DESCARGAR</a>
+        </div>
+        <div class="section-3-image-column">
+            <img src="https://pulpo-landing-demo-9c9676.s3.amazonaws.com/landing-builder/e6bdc81ef12240eeae57edccb26fb0fd.png" alt="Una mujer joven con expresión de confusión o duda, mirando hacia la derecha, vestida con una camiseta rosa, sobre un fondo amarillo brillante." loading="lazy">
+        </div>
+    </div>
+    <h2 class="section-3-bottom-title">Si respondiste SÍ, el Manual de la Temporada de los</h2>
+</section>
+
+<style>
+    .section-4 {
+        background-color: #F8F5EE; /* Overall page background from previous sections */
+        padding: 60px 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+    }
+
+    .manual-card {
+        background-color: #FFFFFF;
+        border-radius: 20px; /* Rounded corners for the card */
+        padding: 40px 30px;
+        max-width: 900px;
+        width: 100%;
+        /* A subtle shadow is often implied for cards, though not strongly visible in the screenshot */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center; /* Center align for mobile */
+    }
+
+    .manual-card-title {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 2rem;
+        font-weight: 700;
+        line-height: 1.2;
+        color: #4A4A4A;
+        margin-bottom: 30px;
+        position: relative;
+        padding-bottom: 15px; /* Space for the underline */
+    }
+
+    .manual-card-title::after {
+        content: '';
+        position: absolute;
+        left: 50%; /* Center the underline for mobile */
+        transform: translateX(-50%);
+        bottom: 0;
+        width: 60px; /* Width of the blue line */
+        height: 4px;
+        background-color: #4C71F1;
+        border-radius: 2px;
+    }
+
+    .manual-features-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 40px 0; /* Space below the list */
+        text-align: left; /* Align list items to the left */
+        width: 100%;
+        max-width: 500px; /* Constrain list width for better readability */
+    }
+
+    .manual-features-list li {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1rem;
+        line-height: 1.6;
+        font-weight: 400;
+        color: #4A4A4A;
+        margin-bottom: 15px;
+        position: relative;
+        padding-left: 30px; /* Space for the checkmark */
+    }
+
+    .manual-features-list li:last-child {
+        margin-bottom: 0;
+    }
+
+    .manual-features-list li::before {
+        content: '✓'; /* Unicode checkmark character */
+        color: #40E0B8; /* Green color for the checkmark */
+        font-weight: 700;
+        position: absolute;
+        left: 0;
+        top: 0;
+        font-size: 1.2em; /* Adjust size of checkmark */
+        line-height: 1.6; /* Match line-height of text */
+    }
+
+    .section-4 .cta-button {
+        background-color: #40E0B8;
+        color: #FFFFFF;
+        padding: 15px 30px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.2rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s ease;
+    }
+
+    .section-4 .cta-button:hover {
+        background-color: #36c7a2;
+    }
+
+    @media (min-width: 768px) {
+        .manual-card {
+            padding: 60px 80px;
+            text-align: left; /* Left align for desktop */
+        }
+
+        .manual-card-title {
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+        }
+
+        .manual-card-title::after {
+            left: 0; /* Align underline to the left for desktop */
+            transform: translateX(0);
+        }
+
+        .manual-features-list {
+            max-width: none; /* Allow list to take more width on desktop */
+        }
+        .manual-features-list li {
+            font-size: 1.1rem;
+        }
+    }
+</style>
+<section class="section-4">
+    <div class="manual-card">
+        <h2 class="manual-card-title">Lo que encontrarás en este manual:</h2>
+        <ul class="manual-features-list">
+            <li>20 protocolos profesionales listos para usar</li>
+            <li>Indicaciones por fisiopatología (melasma, acné, flacidez, hiperpigmentación y mucho más)</li>
+            <li>Porcentajes exactos de cada activo</li>
+            <li>Modo de uso detallado y seguro</li>
+            <li>Forma correcta de neutralización</li>
+            <li>Cantidad recomendada de sesiones</li>
+            <li>Fototipos indicados para cada protocolo</li>
+            <li>Cuidados pre y post-procedimiento</li>
+        </ul>
+        <a href="#" class="cta-button">DESCARGAR E-BOOK AHORA</a>
+    </div>
+</section>
+
+<style>
+    .section-5 {
+        background-color: #F8F5EE; /* Overall page background */
+        padding: 60px 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+    }
+
+    .section-5-container {
+        background-color: #FFFFFF;
+        border-radius: 20px; /* Default for all corners */
+        border-top-right-radius: 100px; /* Override for top-right */
+        border-bottom-right-radius: 20px; /* Override for bottom-right */
+        overflow: hidden; /* Crucial for containing the image within the shape */
+        display: flex;
+        flex-direction: column; /* Stack on mobile */
+        max-width: 1200px;
+        width: 100%;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); /* Subtle shadow, if any */
+    }
+
+    .section-5-image-wrapper {
+        width: 100%; /* Full width on mobile */
+        height: auto;
+        flex-shrink: 0; /* Don't shrink */
+    }
+
+    .section-5-image {
+        width: 100%;
+        height: 100%; /* Fill wrapper height */
+        display: block;
+        object-fit: cover;
+    }
+
+    .section-5-text-content {
+        padding: 30px 20px;
+        text-align: center; /* Center align for mobile */
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        align-items: center; /* Center items for mobile */
+    }
+
+    .section-5-title {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 2rem;
+        font-weight: 700;
+        color: #4A4A4A;
+        margin: 0;
+    }
+
+    .section-5-list-item-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        justify-content: center; /* Center for mobile */
+    }
+
+    .section-5-icon {
+        width: 24px;
+        height: 24px;
+        flex-shrink: 0;
+    }
+
+    .section-5-list-intro {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #4A4A4A;
+        margin: 0;
+    }
+
+    .section-5-list-details {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.6;
+        color: #4A4A4A;
+        margin: 0;
+        max-width: 500px; /* Constrain text width */
+    }
+
+    @media (min-width: 768px) {
+        .section-5-container {
+            flex-direction: row; /* Side-by-side on desktop */
+            align-items: stretch; /* Stretch to fill height */
+        }
+
+        .section-5-image-wrapper {
+            width: 50%; /* Half width for image */
+            height: auto; /* Let content define height */
+        }
+
+        .section-5-image {
+            height: 100%; /* Fill wrapper height */
+            object-fit: cover;
+        }
+
+        .section-5-text-content {
+            width: 50%; /* Half width for text */
+            padding: 40px 30px;
+            text-align: left; /* Left align for desktop */
+            align-items: flex-start; /* Align items to start for desktop */
+            justify-content: center; /* Vertically center content */
+        }
+
+        .section-5-title {
+            font-size: 2.5rem;
+        }
+
+        .section-5-list-item-header {
+            justify-content: flex-start; /* Left align for desktop */
+        }
+
+        .section-5-list-details {
+            max-width: none; /* Remove max-width on desktop */
+        }
+    }
+</style>
+<section class="section-5">
+    <div class="section-5-container">
+        <div class="section-5-image-wrapper">
+            <img src="https://pulpo-landing-demo-9c9676.s3.amazonaws.com/landing-builder/0662cbea59a740b0a89a5ebc80e44882.png" alt="Mujer recibiendo un peeling facial con una brocha, con fondo borroso y una barra morada en la parte superior." class="section-5-image">
+        </div>
+        <div class="section-5-text-content">
+            <h2 class="section-5-title">Protocolos LISTOS</h2>
+            <div class="section-5-list-item-header">
+                <img src="https://pulpo-landing-demo-9c9676.s3.amazonaws.com/landing-builder/3978b05f9ab04a2db1ae15698f70613f.png" alt="Icono de hoja estilizada" class="section-5-icon">
+                <p class="section-5-list-intro">Son 20 tipos de Peeling, incluyendo:</p>
+            </div>
+            <p class="section-5-list-details">Peeling de Cerveza, Peeling de Oro, Margaritas, Ácido Tioglicólico, Tranexámico, y muchos otros que elevarán el nivel de tus tratamientos.</p>
+        </div>
+    </div>
+</section>
+
+<style>
+    .section-6 {
+        background-color: #F8F5EE; /* Overall page background */
+        padding: 80px 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+    }
+
+    .section-6-title {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        line-height: 1.2;
+        color: #4A4A4A;
+        margin-bottom: 50px;
+        text-align: center;
+        max-width: 800px;
+    }
+
+    .benefit-card {
+        background-color: #FFFFFF;
+        border-radius: 20px;
+        padding: 40px 30px;
+        max-width: 900px;
+        width: 100%;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .benefit-card-header {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        line-height: 1.2;
+        color: #4A4A4A;
+        margin-bottom: 30px;
+        position: relative;
+        padding-bottom: 15px;
+        text-align: left;
+        width: 100%;
+        max-width: 500px;
+    }
+
+    .benefit-card-header::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 60px;
+        height: 4px;
+        background-color: #4C71F1;
+        border-radius: 2px;
+    }
+
+    .benefit-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 40px 0;
+        text-align: left;
+        width: 100%;
+        max-width: 500px;
+    }
+
+    .benefit-list li {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1rem;
+        line-height: 1.6;
+        font-weight: 400;
+        color: #4A4A4A;
+        margin-bottom: 15px;
+        position: relative;
+        padding-left: 30px;
+    }
+
+    .benefit-list li:last-child {
+        margin-bottom: 0;
+    }
+
+    .benefit-list li::before {
+        content: '✓';
+        color: #40E0B8;
+        font-weight: 700;
+        position: absolute;
+        left: 0;
+        top: 0;
+        font-size: 1.2em;
+        line-height: 1.6;
+    }
+
+    .section-6 .cta-button {
+        background-color: #40E0B8;
+        color: #FFFFFF;
+        padding: 15px 30px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.2rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s ease;
+    }
+
+    .section-6 .cta-button:hover {
+        background-color: #36c7a2;
+    }
+
+    .section-6 .price-text {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 0.9rem;
+        font-weight: 400;
+        color: rgba(74, 74, 74, 0.5);
+        margin-top: 10px;
+    }
+
+    .section-6-paragraph {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1rem;
+        line-height: 1.6;
+        font-weight: 400;
+        color: #4A4A4A;
+        margin-bottom: 60px;
+        text-align: center;
+        max-width: 600px;
+    }
+
+    .delivery-info-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 40px;
+        max-width: 1000px;
+        width: 100%;
+    }
+
+    .delivery-images {
+        display: flex;
+        flex-direction: column; /* Stack images vertically on mobile */
+        align-items: center;
+        gap: 20px;
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .delivery-ebook-mockup, .delivery-smartphone-mockup {
+        width: 100%;
+        height: auto;
+    }
+
+    .delivery-ebook-mockup {
+        width: 80%;
+    }
+    .delivery-smartphone-mockup {
+        width: 50%;
+    }
+
+    .delivery-features {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        width: 100%;
+        max-width: 500px;
+        text-align: center; /* Center for mobile */
+    }
+
+    .delivery-feature-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .delivery-feature-icon {
+        width: 40px;
+        height: 40px;
+        color: #40E0B8; /* Green color for icons */
+    }
+
+    .delivery-feature-text {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1rem;
+        line-height: 1.6;
+        font-weight: 400;
+        color: #4A4A4A;
+        margin: 0;
+    }
+
+    .final-cta-block {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 60px;
+    }
+
+    @media (min-width: 768px) {
+        .section-6-title {
+            font-size: 3.5rem;
+        }
+
+        .benefit-card {
+            padding: 60px 80px;
+        }
+
+        .benefit-card-header {
+            font-size: 1.8rem;
+            max-width: 700px;
+        }
+
+        .benefit-list {
+            max-width: 700px;
+        }
+
+        .benefit-list li {
+            font-size: 1.1rem;
+        }
+
+        .section-6-paragraph {
+            font-size: 1.1rem;
+        }
+
+        .delivery-info-container {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 80px;
+        }
+
+        .delivery-images {
+            position: relative;
+            min-height: 400px; /* Define height for absolute positioning */
+            width: 45%;
+            max-width: 500px;
+            display: block;
+        }
+
+        .delivery-ebook-mockup {
+            position: absolute;
+            z-index: 1;
+            width: 70%;
+            top: 10%;
+            right: 0;
+        }
+
+        .delivery-smartphone-mockup {
+            position: absolute;
+            z-index: 2;
+            width: 40%;
+            bottom: 10%;
+            left: 0;
+        }
+
+        .delivery-features {
+            width: 55%;
+            text-align: left;
+            align-items: flex-start;
+        }
+
+        .delivery-feature-item {
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .delivery-feature-icon {
+            width: 50px;
+            height: 50px;
+        }
+    }
+</style>
+<section class="section-6">
+    <h2 class="section-6-title">¿Para quién es este material?</h2>
+
+    <div class="benefit-card">
+        <h3 class="benefit-card-header">Para Profesionales de la Estética que:</h3>
+        <ul class="benefit-list">
+            <li>Ya realizan tratamientos y desean personalizarlos</li>
+            <li>Buscan seguridad en la aplicación de peelings químicos</li>
+            <li>Desean ofrecer mejores resultados a sus clientas, con confianza, seguridad y respaldo técnico</li>
+            <li>Quieren optimizar el tiempo con protocolos listos, probados y organizados</li>
+        </ul>
+        <a href="#" class="cta-button">DESCARGAR E-BOOK AHORA</a>
+        <p class="price-text">Solo R$19,90</p>
+    </div>
+
+    <p class="section-6-paragraph">rápida y objetiva en tu día a día profesional.</p>
+
+    <div class="delivery-info-container">
+        <div class="delivery-images">
+            <img src="https://pulpo-landing-demo-9c9676.s3.amazonaws.com/landing-builder/63220d785d554ab6987338e9042a5d3c.png" alt="Maqueta de libro electrónico con la portada 'Manual Temporada de Peelings Químicos'" class="delivery-ebook-mockup">
+            <img src="https://pulpo-landing-demo-9c9676.s3.amazonaws.com/landing-builder/6391aceb76194bfb832ae91fa4df1be1.png" alt="Maqueta de smartphone mostrando la portada del libro electrónico 'Manual Temporada de Peelings Químicos'" class="delivery-smartphone-mockup">
+        </div>
+        <div class="delivery-features">
+            <div class="delivery-feature-item">
+                <img src="https://pulpo-landing-demo-9c9676.s3.amazonaws.com/landing-builder/8a4ade35bdc041c2aa9842a33b9e46e0.png" alt="Icono de sobre con un checkmark" class="delivery-feature-icon">
+                <p class="delivery-feature-text">Entregado en formato PDF directamente a tu correo electrónico de compra</p>
+            </div>
+            <div class="delivery-feature-item">
+                <img src="https://pulpo-landing-demo-9c9676.s3.amazonaws.com/landing-builder/2f5ad57ebbb5464abb91ba79846bf688.png" alt="Icono de impresora" class="delivery-feature-icon">
+                <p class="delivery-feature-text">Puede imprimirse, si deseas tenerlo a mano en tu espacio de atención</p>
+            </div>
+            <div class="delivery-feature-item">
+                <img src="https://pulpo-landing-demo-9c9676.s3.amazonaws.com/landing-builder/09f27c29792d4d3dada08653b8873b58.png" alt="Icono de caja de regalo" class="delivery-feature-icon">
+                <p class="delivery-feature-text">Valor simbólico por todo lo que ofrece</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="final-cta-block">
+        <a href="#" class="cta-button">SOLO R$19,90</a>
+        <p class="price-text">PAGO ÚNICO</p>
+    </div>
+</section>
+
+<style>
+    .section-7 {
+        background-color: #F8F5EE; /* Overall page background */
+        padding: 80px 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+    }
+
+    .author-card {
+        background-color: #FFFFFF;
+        border-radius: 20px; /* Rounded corners for the entire card */
+        overflow: hidden; /* Ensures image respects rounded corners */
+        display: flex;
+        flex-direction: column; /* Stack on mobile */
+        max-width: 1200px;
+        width: 100%;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+    }
+
+    .author-image-wrapper {
+        width: 100%; /* Full width on mobile */
+        height: auto;
+        flex-shrink: 0;
+    }
+
+    .author-image {
+        width: 100%;
+        height: 100%; /* Fill wrapper height */
+        display: block;
+        object-fit: cover;
+    }
+
+    .author-text-content {
+        padding: 30px 20px;
+        text-align: center; /* Center align for mobile */
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        align-items: center; /* Center items for mobile */
+    }
+
+    .author-subtitle {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1rem;
+        font-weight: 400;
+        color: #4A4A4A;
+        margin: 0;
+    }
+
+    .author-name {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #4A4A4A;
+        margin: 0;
+    }
+
+    .author-paragraph {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1rem;
+        line-height: 1.6;
+        font-weight: 400;
+        color: #4A4A4A;
+        margin: 0;
+        max-width: 600px; /* Constrain text width for readability */
+    }
+
+    @media (min-width: 768px) {
+        .author-card {
+            flex-direction: row; /* Side-by-side on desktop */
+            align-items: stretch; /* Stretch to fill height */
+        }
+
+        .author-image-wrapper {
+            width: 40%; /* Adjust width for image */
+            max-width: 400px; /* Max width for image column */
+            border-top-left-radius: 20px; /* Match card */
+            border-bottom-left-radius: 20px; /* Match card */
+            overflow: hidden;
+        }
+
+        .author-image {
+            height: 100%; /* Fill wrapper height */
+            object-fit: cover;
+            border-top-left-radius: 20px; /* Match card */
+            border-bottom-left-radius: 20px; /* Match card */
+        }
+
+        .author-text-content {
+            width: 60%; /* Adjust width for text */
+            padding: 40px 30px;
+            text-align: left; /* Left align for desktop */
+            align-items: flex-start; /* Align items to start for desktop */
+            justify-content: center; /* Vertically center content */
+            gap: 20px;
+        }
+
+        .author-name {
+            font-size: 3rem;
+        }
+
+        .author-paragraph {
+            max-width: none; /* Remove max-width on desktop */
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .author-image-wrapper {
+            width: 35%;
+            max-width: 450px;
+        }
+        .author-text-content {
+            width: 65%;
+            padding: 50px 60px;
+        }
+        .author-name {
+            font-size: 3.5rem;
+        }
+    }
+</style>
+<section class="section-7">
+    <div class="author-card">
+        <div class="author-image-wrapper">
+            <img src="https://pulpo-landing-demo-9c9676.s3.amazonaws.com/landing-builder/5e9982769d6f48adbe63ad586be069bb.png" alt="Retrato de Cris Marques, especialista en estética, sonriendo y vistiendo una bata blanca con mangas de encaje." class="author-image">
+        </div>
+        <div class="author-text-content">
+            <p class="author-subtitle">Conoce a la autora del manual</p>
+            <h2 class="author-name">Cris Marques</h2>
+            <p class="author-paragraph">Especialista y profesora de Estética y Cosmetología con más de 20 años de experiencia en tratamientos estéticos para mujeres.</p>
+            <p class="author-paragraph">Actúa desde 2004 atendiendo a clientes y ha formado diversas alianzas con cirujanos plásticos, dermatólogos y salones de belleza.</p>
+            <p class="author-paragraph">Desde 2016 inició su carrera como profesora de estética, hoy ofrece 17 cursos profesionalizantes y 5 talleres con más de 22 mil alumnas en Brasil y en todo el mundo.</p>
+            <p class="author-paragraph">Su objetivo es ayudar a más y más mujeres a emprender, volviéndose financieramente independientes y brindando resultados maravillosos a sus clientas a través de los tratamientos estéticos.</p>
+        </div>
+    </div>
+</section>
+
+<style>
+    .section-8 {
+        background-color: #F8F5EE; /* Overall page background */
+        padding: 80px 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+    }
+
+    .testimonials-card {
+        background-color: #FFFFFF;
+        border-radius: 20px;
+        padding: 60px 30px;
+        max-width: 1200px;
+        width: 100%;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .testimonials-title {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        line-height: 1.2;
+        color: #4A4A4A;
+        margin-bottom: 50px;
+        text-align: center;
+    }
+
+    .testimonials-grid {
+        display: flex;
+        flex-direction: column; /* Stack on mobile */
+        gap: 40px;
+        width: 100%;
+        max-width: 800px; /* Max width for content inside card */
+    }
+
+    .testimonial-item {
+        position: relative;
+        padding-bottom: 40px; /* Space for border and next item */
+        text-align: left;
+        border-bottom: 1px solid #E0E0E0; /* Default border for mobile */
+    }
+
+    .testimonial-item:last-child {
+        border-bottom: none; /* No border for the very last item on mobile */
+        padding-bottom: 0;
+    }
+
+    .testimonial-item::before {
+        content: '"'; /* Double quote character */
+        font-family: 'Montserrat', sans-serif; /* Use a font that renders quotes nicely */
+        font-size: 100px; /* Large size */
+        color: #EBEBEB; /* Light grey */
+        position: absolute;
+        top: -20px;
+        left: 0;
+        z-index: 0;
+        line-height: 1;
+        opacity: 0.8;
+    }
+
+    .testimonial-name {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #4A4A4A;
+        margin-bottom: 5px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .testimonial-profession {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 0.9rem;
+        font-weight: 400;
+        color: #888888;
+        margin-bottom: 15px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .testimonial-quote {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1rem;
+        line-height: 1.6;
+        font-weight: 400;
+        font-style: italic;
+        color: #4A4A4A;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    @media (min-width: 768px) {
+        .testimonials-card {
+            padding: 80px 60px;
+        }
+
+        .testimonials-title {
+            font-size: 3rem;
+            margin-bottom: 60px;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px 40px;
+            max-width: 1000px;
+        }
+
+        .testimonial-item {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        /* Apply bottom border to items in the first row */
+        .testimonials-grid > div:nth-child(1),
+        .testimonials-grid > div:nth-child(2) {
+            padding-bottom: 40px;
+            border-bottom: 1px solid #E0E0E0;
+        }
+
+        .testimonial-item::before {
+            font-size: 120px;
+            top: -30px;
+            left: -10px;
+        }
+    }
+</style>
+<section class="section-8">
+    <div class="testimonials-card">
+        <h2 class="testimonials-title">Lo que dicen mis alumnas</h2>
+        <div class="testimonials-grid">
+            <div class="testimonial-item">
+                <p class="testimonial-name">Daniela S. Almeida</p>
+                <p class="testimonial-profession">Esteticista, graduada hace 6 años</p>
+                <p class="testimonial-quote">Antes me sentía perdida con tantos tipos de peeling. ¡Ahora sigo el protocolo correcto y los resultados son increíbles!</p>
+            </div>
+            <div class="testimonial-item">
+                <p class="testimonial-name">Simone R. Soares</p>
+                <p class="testimonial-profession">Biomédica esteticista</p>
+                <p class="testimonial-quote">¡Facilitó mucho mi rutina. Todo listo, bien explicado y organizado!</p>
+            </div>
+            <div class="testimonial-item">
+                <p class="testimonial-name">Maria Ângela Do Amaral</p>
+                <p class="testimonial-profession">Esteticista</p>
+                <p class="testimonial-quote">Ya trabajaba con peelings químicos, pero después de conocer a la Profª Cris, mi visión cambió completamente. Los protocolos, la forma clara de enseñar y la confianza que ella transmite abrieron mis horizontes como profesional. ¡Hoy aplico con mucha más seguridad y entrego resultados reales para mis clientas!</p>
+            </div>
+            <div class="testimonial-item">
+                <p class="testimonial-name">Juliana Martins</p>
+                <p class="testimonial-profession">Esteticista Dermato Funcional</p>
+                <p class="testimonial-quote">Estaba muy insegura para aplicar peeling químico, siempre con miedo a equivocarme. Pero después todo cambió. Gané confianza, entendí el paso a paso y hoy consigo entregar resultados increíbles para mis clientas.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .section-9 {
+        background-color: #F8F5EE; /* Overall page background */
+        padding: 80px 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+    }
+
+    .final-cta-content {
+        background-color: #FFFFFF;
+        border-radius: 20px;
+        padding: 60px 30px;
+        max-width: 900px;
+        width: 100%;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 25px;
+    }
+
+    .final-cta-title {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        line-height: 1.2;
+        color: #4A4A4A;
+        margin: 0;
+    }
+
+    .final-cta-paragraph {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1rem;
+        line-height: 1.6;
+        font-weight: 400;
+        color: #4A4A4A;
+        margin: 0;
+        max-width: 600px; /* Constrain text width for readability */
+    }
+
+    .final-cta-button {
+        background-color: #40E0B8;
+        color: #FFFFFF;
+        padding: 15px 30px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.2rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s ease;
+        margin-top: 20px;
+    }
+
+    .final-cta-button:hover {
+        background-color: #36c7a2;
+    }
+
+    .final-cta-price-text {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 0.9rem;
+        font-weight: 400;
+        color: rgba(74, 74, 74, 0.5);
+        margin-top: 10px;
+    }
+
+    @media (min-width: 768px) {
+        .final-cta-content {
+            padding: 80px 60px;
+            gap: 30px;
+        }
+
+        .final-cta-title {
+            font-size: 3rem;
+        }
+
+        .final-cta-paragraph {
+            font-size: 1.1rem;
+            max-width: 700px;
+        }
+    }
+</style>
+<section class="section-9">
+    <div class="final-cta-content">
+        <h2 class="final-cta-title">¡Empieza ahora mismo!</h2>
+        <p class="final-cta-paragraph">Haz clic en el botón de abajo, finaliza tu compra en pocos minutos y recibe el manual directamente en tu correo electrónico.</p>
+        <p class="final-cta-paragraph">Eleva la calidad de tus tratamientos con protocolos profesionales y bien fundamentados.</p>
+        <a href="#" class="final-cta-button">QUIERO MI MANUAL AHORA</a>
+        <p class="final-cta-price-text">Solo R$19,90</p>
+    </div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,124 @@
+{
+  "task_id": "3d3eb7a4-84d3-4abf-986f-b828495a4514",
+  "url_origen": "https://desafiodrrenanbotelho.com.br/v11-31-216/",
+  "full_screenshot_path": "output_scrapes\\3d3eb7a4-84d3-4abf-986f-b828495a4514\\full_page.png",
+  "secciones": [
+    {
+      "id_seccion": "elementor-element",
+      "tipo": "testimonios",
+      "color_fondo": "#ffffff",
+      "texto_original": "Elimine até 5kg em apenas 7 dias sem passar fome e sem sentir fraqueza\nPara mulheres de 35+ anos que lutam contra a gordura abdominal teimosa e querem resultados rápidos e definitivos\n1° LOTE ATIVO\nR$\n37,00\n5x de R$ 8,19\n2° LOTE\nR$\n67,00\nem breve\n3° LOTE\nR$\n97,00\nem breve\nQUERO ELIMINAR 5KG AGORA\n🔥 72% das vagas já preenchidas",
+      "screenshot_path": "output_scrapes\\3d3eb7a4-84d3-4abf-986f-b828495a4514\\assets\\seccion_0.png",
+      "faq_items": null,
+      "testimonios": null,
+      "imagenes_s3": [
+        "https://desafiodrrenanbotelho.com.br/wp-content/uploads/2026/05/pagamento-hotmart-claro.svg",
+        "https://desafiodrrenanbotelho.com.br/wp-content/uploads/2025/05/renan-hero-1-1-1.webp",
+        "https://desafiodrrenanbotelho.com.br/wp-content/uploads/2025/05/renan-hero-1-1-1-300x293.webp"
+      ],
+      "es_mockup_con_texto": false,
+      "es_testimonio_screenshot": false
+    },
+    {
+      "id_seccion": "elementor-element",
+      "tipo": "text_only",
+      "color_fondo": "#ffffff",
+      "texto_original": "",
+      "screenshot_path": "output_scrapes\\3d3eb7a4-84d3-4abf-986f-b828495a4514\\assets\\seccion_1.png",
+      "faq_items": null,
+      "testimonios": null,
+      "imagenes_s3": [
+        "https://desafiodrrenanbotelho.com.br/wp-content/uploads/2025/06/Marcinha.webp",
+        "https://desafiodrrenanbotelho.com.br/wp-content/uploads/2025/06/Alcineia.webp",
+        "https://desafiodrrenanbotelho.com.br/wp-content/uploads/2025/06/Foggata-768x254.webp",
+        "https://desafiodrrenanbotelho.com.br/wp-content/uploads/2025/06/Ana-sem-passar-fome.webp",
+        "https://desafiodrrenanbotelho.com.br/wp-content/uploads/2025/06/Heliana.webp",
+        "https://desafiodrrenanbotelho.com.br/wp-content/uploads/2025/06/Meire.webp",
+        "https://desafiodrrenanbotelho.com.br/wp-content/uploads/2025/06/Gilvana.webp"
+      ],
+      "es_mockup_con_texto": false,
+      "es_testimonio_screenshot": false
+    },
+    {
+      "id_seccion": "elementor-element",
+      "tipo": "text_only",
+      "color_fondo": "#faf5ff",
+      "texto_original": "O Que Você Vai Conseguir em Apenas 7 Dias\nEnergia Explosiva\n\nSinta sua energia, concentração e disposição atingirem um novo nível desde o primeiro dia\n\nControle Total dos Desejos\n\nAprenda a controlar o desejo por doces e carboidratos vazios de forma natural\n\nMetabolismo Acelerado\n\nDestravar seu emagrecimento e acelerar seu metabolismo para queimar gordura 24h\n\nSem Passar Fome\n\nComa comida de verdade, sem gastos extras e sem necessidade de remédios ou suplementos\n\nSuporte Completo\n\n1 ano de acesso + material completo + suporte para integrar o jejum à sua rotina\n\nPré-Diagnóstico Médico\n\nAvaliação personalizada com dieta específica para seu estado atual de vida\n\nQUERO ME INSCREVER AGORA\n🔥 72% das vagas já preenchidas",
+      "screenshot_path": "output_scrapes\\3d3eb7a4-84d3-4abf-986f-b828495a4514\\assets\\seccion_2.png",
+      "faq_items": null,
+      "testimonios": null,
+      "imagenes_s3": [
+        "https://desafiodrrenanbotelho.com.br/wp-content/uploads/2026/05/pagamento-hotmart-escuro.svg"
+      ],
+      "es_mockup_con_texto": false,
+      "es_testimonio_screenshot": false
+    },
+    {
+      "id_seccion": "elementor-element",
+      "tipo": "text_only",
+      "color_fondo": "#ffffff",
+      "texto_original": "Você Reconhece Esses Sinais?\nBarriga que não diminui: Mesmo fazendo dieta, a gordura abdominal teimosa não sai\nEnergia em baixa: Você acorda cansada e sem disposição para enfrentar o dia\nCompulsão por doces: Não consegue resistir aos carboidratos e doces, especialmente à tarde\nMedo do futuro: Preocupação com sua saúde e com o que pode acontecer se não emagrecer\nAutoestima baixa: Você não se sente bem com seu corpo e evita certas roupas ou situações\nEfeito sanfona: Já tentou várias dietas mas sempre volta ao peso anterior\nSe você se identificou com pelo menos 3 desses pontos, este desafio foi feito especialmente para você!",
+      "screenshot_path": "output_scrapes\\3d3eb7a4-84d3-4abf-986f-b828495a4514\\assets\\seccion_3.png",
+      "faq_items": null,
+      "testimonios": null,
+      "imagenes_s3": [],
+      "es_mockup_con_texto": false,
+      "es_testimonio_screenshot": false
+    },
+    {
+      "id_seccion": "elementor-element",
+      "tipo": "text_only",
+      "color_fondo": "#ffffff",
+      "texto_original": "O Método do Jejum Metabólico Que Vai Transformar Sua Vida\nJejum Metabólico Personalizado\n\nAprenda quando iniciar e quando quebrar o jejum, sempre respeitando seu dia a dia e seu tempo. Sem regras rígidas que não cabem na sua rotina.\n\nDieta Personalizada\n\nReceba uma dieta específica para seu estado atual de vida, que vai ativar seu metabolismo da melhor forma possível.\n\nÁudios Transformadores\n\nÁudios gravados pelo Dr. Renan Botelho que vão mudar sua forma de lidar com a comida e com sua saúde.\n\nPré-Diagnóstico Médico\n\nO Dr. Renan irá avaliar suas respostas e te dar um diagnóstico de pontos de atenção na sua saúde, com dieta personalizada.\n\nQUERO ME INSCREVER AGORA\n🔥 72% das vagas já preenchidas",
+      "screenshot_path": "output_scrapes\\3d3eb7a4-84d3-4abf-986f-b828495a4514\\assets\\seccion_4.png",
+      "faq_items": null,
+      "testimonios": null,
+      "imagenes_s3": [
+        "https://desafiodrrenanbotelho.com.br/wp-content/uploads/2026/05/pagamento-hotmart-claro.svg"
+      ],
+      "es_mockup_con_texto": false,
+      "es_testimonio_screenshot": false
+    },
+    {
+      "id_seccion": "preco",
+      "tipo": "text_only",
+      "color_fondo": "#fefce8",
+      "texto_original": "OFERTA ESPECIAL - LOTE 0\nO QUE VOCÊ VAI RECEBER:\nCurso completo Desafio Jejum 5 em 7 (1 ano de acesso)\nDieta personalizada baseada no seu perfil\nPré-diagnóstico médico individualizado\nE-book: O Plano Perfeito do Emagrecimento Definitivo\nÁudios transformadores do Dr. Renan\nSuporte completo durante o desafio\nProtocolo para eliminar até 5kg em 7 dias\n\nDe R$ 137,00 por\n\nR$ 37,00\n\n8x de R$5,25\n\nAtenção: Esta oferta expira em breve e as vagas são limitadas!\nQUERO ELIMINAR 5KG\n🔥 72% das vagas já preenchidas",
+      "screenshot_path": "output_scrapes\\3d3eb7a4-84d3-4abf-986f-b828495a4514\\assets\\seccion_5.png",
+      "faq_items": null,
+      "testimonios": null,
+      "imagenes_s3": [
+        "https://desafiodrrenanbotelho.com.br/wp-content/uploads/2026/05/pagamento-hotmart-escuro.svg"
+      ],
+      "es_mockup_con_texto": false,
+      "es_testimonio_screenshot": false
+    },
+    {
+      "id_seccion": "elementor-element",
+      "tipo": "text_only",
+      "color_fondo": "#ffffff",
+      "texto_original": "Sou Dr. Renan Botelho\nMédico especialista em emagrecimento feminino há mais de 6 anos, transformando a vida de mulheres que lutavam contra a balança há décadas.\nAtendimentos Realizados\n50.000\n+\nDe Gordura Eliminados\n80.000\nkg\nAlunas Transformadas\n50.000\n+\n\nCriador do método exclusivo PEF-360 (Programa de Emagrecimento Feminino 360º) que trata a base hormonal e metabólica das mulheres, permitindo emagrecer até 20kg em 45 dias de forma 100% natural.",
+      "screenshot_path": "output_scrapes\\3d3eb7a4-84d3-4abf-986f-b828495a4514\\assets\\seccion_6.png",
+      "faq_items": null,
+      "testimonios": null,
+      "imagenes_s3": [
+        "https://desafiodrrenanbotelho.com.br/wp-content/uploads/2025/05/renan-perfil-1-1-1.webp",
+        "https://desafiodrrenanbotelho.com.br/wp-content/uploads/2025/05/renan-perfil-1-1-1-261x300.webp"
+      ],
+      "es_mockup_con_texto": false,
+      "es_testimonio_screenshot": false
+    },
+    {
+      "id_seccion": "elementor-element",
+      "tipo": "text_only",
+      "color_fondo": "#dc2626",
+      "texto_original": "RESTAM POUCAS HORAS!\n\nO desafio começa em breve e as vagas são limitadas. Não perca a oportunidade de transformar sua vida em apenas 7 dias!\n\nGARANTIR MINHA VAGA AGORA",
+      "screenshot_path": "output_scrapes\\3d3eb7a4-84d3-4abf-986f-b828495a4514\\assets\\seccion_7.png",
+      "faq_items": null,
+      "testimonios": null,
+      "imagenes_s3": [],
+      "es_mockup_con_texto": false,
+      "es_testimonio_screenshot": false
+    }
+  ]
+}

@@ -38,6 +38,10 @@ pip-delete-this-directory.txt
 Thumbs.db
 Desktop.ini
 
+# Ignore all output_scrapers subfolders in any directory
+output_scrapers/
+**/output_scrapers/
+
 # Node
 node_modules/
 npm-debug.log

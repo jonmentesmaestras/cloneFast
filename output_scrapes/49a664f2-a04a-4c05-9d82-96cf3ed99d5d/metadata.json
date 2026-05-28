@@ -1,0 +1,175 @@
+{
+  "task_id": "49a664f2-a04a-4c05-9d82-96cf3ed99d5d",
+  "url_origen": "https://cursos.docesexclusivos.com.br/pasta-rmkt-01",
+  "full_screenshot_path": "output_scrapes\\49a664f2-a04a-4c05-9d82-96cf3ed99d5d\\full_page.png",
+  "secciones": [
+    {
+      "id_seccion": "b_3500042_1_176986990619864986",
+      "tipo": "text_only",
+      "color_fondo": "#f4d859",
+      "texto_original": "DIAS\nHORAS\nMINUTOS\nSEGUNDOS\n00\n00\n19\n45\nÚLTIMA CHANCE de garantir o desconto e acesso VÍTALICIO ao mini curso completo",
+      "screenshot_path": "output_scrapes\\49a664f2-a04a-4c05-9d82-96cf3ed99d5d\\assets\\seccion_0.png",
+      "faq_items": null,
+      "testimonios": null,
+      "imagenes_s3": [],
+      "es_mockup_con_texto": false,
+      "es_testimonio_screenshot": false
+    },
+    {
+      "id_seccion": "b_3500042_1_1769869768697e11c8b7841",
+      "tipo": "text_only",
+      "color_fondo": "#1c1c1c",
+      "texto_original": "Aprenda os segredos da Pasta de Leite em Pó Perfeita: Ótima textura e sem soltar óleo\n\n\nDe R$ 197,00, por apenas:\n\n17\n\nà vista\n\n,00\nR$\n\nPague uma única vez\n\nCupom com 91% de desconto ativado!\n\nACESSO IMEDIATO E VITALÍCIO\n\n+ 12MIL \n\nALUNAS\n\nCompra 100% segura. Receba seu acesso imediatamente na plataforma da Hotmart após confirmação do pagamento.",
+      "screenshot_path": "output_scrapes\\49a664f2-a04a-4c05-9d82-96cf3ed99d5d\\assets\\seccion_1.png",
+      "faq_items": null,
+      "testimonios": null,
+      "imagenes_s3": [
+        "https://pages.greatpages.com.br/cursos.docesexclusivos.com.br-pasta-rmkt-01/1770071448/imagens/desktop/3500042_1_1769869768697e11c8b7841.png"
+      ],
+      "es_mockup_con_texto": false,
+      "es_testimonio_screenshot": false
+    },
+    {
+      "id_seccion": "b_3500042_1_1769869768697e11c8b7852",
+      "tipo": "text_only",
+      "color_fondo": "#ffffff",
+      "texto_original": "NOSSAS ALUNAS\nO que elas dizem sobre a pasta perfeita",
+      "screenshot_path": "output_scrapes\\49a664f2-a04a-4c05-9d82-96cf3ed99d5d\\assets\\seccion_2.png",
+      "faq_items": null,
+      "testimonios": null,
+      "imagenes_s3": [],
+      "es_mockup_con_texto": false,
+      "es_testimonio_screenshot": false
+    },
+    {
+      "id_seccion": "b_3500042_1_1769869768697e11c8b7854",
+      "tipo": "testimonios",
+      "color_fondo": "#171717",
+      "texto_original": "SERVE PARA MIM?\nO mini curso é para quem é:\n\nNão aguenta mais a pasta americana\n\nComeçando do zero\n\nJá trabalha com confeitaria\n\nQuer aprender uma pasta fácil de fazer, econômica e com resultado profissional desde a primeira vez.\n\nMas quer uma pasta mais estável, lisa e firme para elevar o acabamento dos doces.\n\nChega de ressecar, rachar, quebrar e ter gosto ruim — existe uma alternativa muito superior.\n\nQuer um doce com acabamento impecável\n\nBusca se diferenciar no mercado\n\nQuer um doce 100% comestível\n\nUma superfície lisa, sem textura e com acabamento perfeito para pintura e decoração.\n\nPoucas confeiteiras dominam essa técnica — ofereça um produto exclusivo e aumente seu ticket médio.\n\nNada de estruturas artificiais ou isopor — uma pasta segura, saborosa e aprovada pelos clientes.\n\nQUERO ME INSCREVER",
+      "screenshot_path": "output_scrapes\\49a664f2-a04a-4c05-9d82-96cf3ed99d5d\\assets\\seccion_3.png",
+      "faq_items": null,
+      "testimonios": null,
+      "imagenes_s3": [
+        "https://pages.greatpages.com.br/cursos.docesexclusivos.com.br-pasta-rmkt-01/1770071448/imagens/desktop/3500042_1_1769869768697e11c8b7841.png"
+      ],
+      "es_mockup_con_texto": false,
+      "es_testimonio_screenshot": false
+    },
+    {
+      "id_seccion": "b_3500042_1_1769869768697e11c8b7857",
+      "tipo": "text_only",
+      "color_fondo": "#d2d2d2",
+      "texto_original": "Vídeo aulas em alta definição na melhor e maior plataforma\n\nAprenda passo a passo com vídeo aulas nítidas, detalhadas e gravadas em alta qualidade — para você enxergar cada detalhe do processo e reproduzir com total segurança. Assista quando e quantas vezes quiser, no seu ritmo, pelo celular, tablet ou computador. Com acesso ao aplicativo moderno da Hotmart.",
+      "screenshot_path": "output_scrapes\\49a664f2-a04a-4c05-9d82-96cf3ed99d5d\\assets\\seccion_4.png",
+      "faq_items": null,
+      "testimonios": null,
+      "imagenes_s3": [],
+      "es_mockup_con_texto": false,
+      "es_testimonio_screenshot": false
+    },
+    {
+      "id_seccion": "b_3500042_1_1769869768697e11c8b7858",
+      "tipo": "text_only",
+      "color_fondo": "#171717",
+      "texto_original": "MÓDULOS\nO que você irá aprender?\n\nINGREDIENTES\n\nQuais são os melhores mais certeiros ingredientes para você ter uma pasta bem balanceada.\n\n2 AULAS + EBOOK\n\nA Base para fazer o preparo\n\nComo produzir a pasta da forma correta, quanto tempo de descanso, forma de preparo totalmente prática.\n\nPASSO A PASSO\n\n2 AULAS \n\nSeja na mão ou na batedeira\n\nARMAZENAMENTO E VALIDADE\n\nComo e onde armazenar sua pasta e por quando tempo você pode fazer antes para antecipar sua produção.\n\n2 AULAS \n\nPasta pronta e agora?\n\nQUERO ACESSAR AGORA",
+      "screenshot_path": "output_scrapes\\49a664f2-a04a-4c05-9d82-96cf3ed99d5d\\assets\\seccion_5.png",
+      "faq_items": null,
+      "testimonios": null,
+      "imagenes_s3": [
+        "https://pages.greatpages.com.br/cursos.docesexclusivos.com.br-pasta-rmkt-01/1770071448/imagens/desktop/3500042_1_1769869768697e11c8b7841.png"
+      ],
+      "es_mockup_con_texto": false,
+      "es_testimonio_screenshot": false
+    },
+    {
+      "id_seccion": "b_3500042_1_1769869768697e11c8b785b",
+      "tipo": "text_only",
+      "color_fondo": "#171717",
+      "texto_original": "Se você se inscrever agora ainda vai receber bônus incríveis\n\n AULAS BÔNUS: para aprender como usar a pasta perfeita diretamente em alguns modelos de doces, garantindo acabamento liso, firme e profissional. mesmo sendo iniciante.\n\nBônus 01\n\n AULAS BÔNUS: Descubra como chegar em cores básicas sem manchar a pasta e sem desperdiçar corante. Técnica simples, resultado de confeiteira profissional.\n\nBônus 02\n\nAcesso vitalício (condicional): Assista às aulas nos primeiros 5 dias e desbloqueie acesso vitalício ao conteúdo, sem pagar nada a mais por isso.(Uma recompensa para quem realmente se compromete com o aprendizado.)\n\nBônus 03",
+      "screenshot_path": "output_scrapes\\49a664f2-a04a-4c05-9d82-96cf3ed99d5d\\assets\\seccion_6.png",
+      "faq_items": null,
+      "testimonios": null,
+      "imagenes_s3": [],
+      "es_mockup_con_texto": false,
+      "es_testimonio_screenshot": false
+    },
+    {
+      "id_seccion": "b_3500042_1_1769869768697e11c8b785d",
+      "tipo": "testimonios",
+      "color_fondo": "#ffffff",
+      "texto_original": "Confira alguns depoimentos de quem faz sucesso com a pasta perfeita",
+      "screenshot_path": "output_scrapes\\49a664f2-a04a-4c05-9d82-96cf3ed99d5d\\assets\\seccion_7.png",
+      "faq_items": null,
+      "testimonios": null,
+      "imagenes_s3": [],
+      "es_mockup_con_texto": false,
+      "es_testimonio_screenshot": false
+    },
+    {
+      "id_seccion": "b_3500042_1_1769869768697e11c8b7860",
+      "tipo": "text_only",
+      "color_fondo": "#222222",
+      "texto_original": "EXCLUSIVO\n\n91% de desconto ativado!\n\nDe R$ 197,00, por apenas:\n\n17\n\nCurso completo em vídeo aulas\n\nà vista\n\n,00\nR$\n\nMaterial didático incluso\n\nPague uma única vez\n\nCertificado de conclusão \n\nBônus extras\n\nACESSO IMEDIATO E VITALÍCIO\nDIAS\nHORAS\nMINUTOS\nSEGUNDOS\n00\n00\n04\n38\n\noferta encerra a qualquer momento",
+      "screenshot_path": "output_scrapes\\49a664f2-a04a-4c05-9d82-96cf3ed99d5d\\assets\\seccion_8.png",
+      "faq_items": null,
+      "testimonios": null,
+      "imagenes_s3": [
+        "https://pages.greatpages.com.br/cursos.docesexclusivos.com.br-pasta-rmkt-01/1770071448/imagens/desktop/3500042_1_1769869768697e11c8b7841.png"
+      ],
+      "es_mockup_con_texto": false,
+      "es_testimonio_screenshot": false
+    },
+    {
+      "id_seccion": "b_3500042_1_1769869768697e11c8b7863",
+      "tipo": "text_only",
+      "color_fondo": "#ffffff",
+      "texto_original": "GARANTIA COMPLETA\n\nVocê tem 7 dias para conhecer o mini curso com tranquilidade. A garantia existe para que você se sinta segura ao entrar — e não porque acreditamos que você vá desistir. As alunas costumam perceber logo no início o quanto essa técnica realmente faz diferença.",
+      "screenshot_path": "output_scrapes\\49a664f2-a04a-4c05-9d82-96cf3ed99d5d\\assets\\seccion_9.png",
+      "faq_items": null,
+      "testimonios": null,
+      "imagenes_s3": [],
+      "es_mockup_con_texto": false,
+      "es_testimonio_screenshot": false
+    },
+    {
+      "id_seccion": "b_3500042_1_1769869768697e11c8b7865",
+      "tipo": "text_only",
+      "color_fondo": "#171717",
+      "texto_original": "Conheça \nsua professora:\nTamise Albuquerque\n\nFormada em engenharia química, sou professora e confeiteira artística especialista em doces personalizados exclusivos em pasta de leite em pó.\n\nHoje já formei dezenas de confeiteiras que conquistaram sua liberdade financeira e possuem uma rendas 2, 4 e até mais de 10 mil, como especialistas de doces exclusivos, possibilitando atuar com pouco investimento em um dos segmentos da confeitaria mais lucrativo e em pleno crescimento, e o melhor de tudo, existem poucos profissionais para a demanda.\n\n\nAgora chegou a vez de pegar na sua mão e te ajudar a conquistar lucro e liberdade financeira na confeitaria.",
+      "screenshot_path": "output_scrapes\\49a664f2-a04a-4c05-9d82-96cf3ed99d5d\\assets\\seccion_10.png",
+      "faq_items": null,
+      "testimonios": null,
+      "imagenes_s3": [
+        "https://pages.greatpages.com.br/cursos.docesexclusivos.com.br-pasta-rmkt-01/1770071448/imagens/desktop/3500042_1_1769869768697e11c8b7865.png"
+      ],
+      "es_mockup_con_texto": false,
+      "es_testimonio_screenshot": false
+    },
+    {
+      "id_seccion": "b_3500042_1_1769869768697e11c8b7866",
+      "tipo": "text_only",
+      "color_fondo": "#222222",
+      "texto_original": "Dúvidas Frequentes\n\nAqui estão as principais dúvidas para você tirar antes de fazer sua matrícula e começar a colocar a mão na massa.\n\nEMITE CERTIFICADO?\n\nSim! Ao final do curso você pode emitir um lindo certificado em seu nome.\n\n\nPOSSO ASSISTIR O CONTEÚDO ATÉ QUE DIA?\n\nVocê terá 12 meses de acesso ao conteúdo completo da plataforma, mas se assistir todo conteúdo em até 5 dias, eu passarei automaticamente seu acesso para vitalício, topa esse desafio? \n\n\nPOSSO PAGAR POR PIX?\n\nSim, pode pagar diretamente pela plataforma da Hotmart via Pix. Toda parte de pagamento é 100% segura e mediada pela Hotmart.\n\n\nFUNCIONA PARA QUEM NÃO É CONFEITEIRA?\n\nVocê não precisa ter experiência com confeitaria para começar. Muitas das minha melhores alunas começaram pela receita.\n\n\nPOSSO USAR SUA PASTA PARA BOLO?\n\nPode sim, claro! Tudo que vou ensinar é voltado para os doces personalizados, mas você pode usar a pasta para cobrir seus bolos.\n\n\nQUERO ME INSCREVER",
+      "screenshot_path": "output_scrapes\\49a664f2-a04a-4c05-9d82-96cf3ed99d5d\\assets\\seccion_11.png",
+      "faq_items": null,
+      "testimonios": null,
+      "imagenes_s3": [
+        "https://pages.greatpages.com.br/cursos.docesexclusivos.com.br-pasta-rmkt-01/1770071448/imagens/desktop/3500042_1_1769869768697e11c8b7841.png"
+      ],
+      "es_mockup_con_texto": false,
+      "es_testimonio_screenshot": false
+    },
+    {
+      "id_seccion": "b_3500042_1_1769869768697e11c8b7867",
+      "tipo": "text_only",
+      "color_fondo": "#171717",
+      "texto_original": "Copyright © AMME DIgital 2025 CNPJ: 57191255/0001-04  – Todos os direitos reservados. | Termos de Uso  |  Políticas de Privacidade",
+      "screenshot_path": "output_scrapes\\49a664f2-a04a-4c05-9d82-96cf3ed99d5d\\assets\\seccion_12.png",
+      "faq_items": null,
+      "testimonios": null,
+      "imagenes_s3": [],
+      "es_mockup_con_texto": false,
+      "es_testimonio_screenshot": false
+    }
+  ]
+}
