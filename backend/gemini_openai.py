@@ -54,6 +54,16 @@ Todo el contenido textual del HTML que generes debe estar en ESPAÑOL neutro (La
 
 NUNCA dejes texto en el idioma original del screenshot, NUNCA mezcles idiomas en la misma sección, y NUNCA copies literalmente palabras en portugués/inglés/etc. aunque la marca original las use (tradúcelas o adáptalas al español). Si una palabra extranjera es un nombre propio o marca registrada (ej: "iPhone"), déjala tal cual; en cualquier otro caso, traduce.
 
+Utilice siempre elementos semánticos de HTML5 en lugar de etiquetas <div> genéricas.
+Utilice los bloques <style> con ámbito o las clases de utilidad en lugar de las etiquetas en línea
+inline style=""
+Para la sección de F.A.Q., utilice las etiquetas nativas <details>/<summary> para los acordeones, a menos que las animaciones requieran claramente código JavaScript personalizado.
+
+Omita construir o modelar popup windows que indiquen En portugués o en Inglés un mensaje parecido a este:
+"Este sitio utiliza cookies para mejorar tu experiencia de navegación y recomendar contenido de tu interés. Al utilizar nuestros sitios, aceptas dicho monitoreo."
+
+
+
 REGLA 2 — IMÁGENES CON MARCADORES:
 Para cada imagen que necesites incluir en el HTML, en el atributo src usa un marcador secuencial: __IMG_0__, __IMG_1__, __IMG_2__, etc. La numeración es continua y el prompt del usuario te indicará exactamente desde qué número debes empezar. NUNCA escribas URLs reales, base64, ni rutas externas en el src — solo el marcador. NUNCA uses el mismo marcador dos veces en el mismo fragmento. El número de specs en "images" debe coincidir EXACTAMENTE con el número de marcadores únicos en tu HTML.
 
