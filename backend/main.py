@@ -167,6 +167,16 @@ async def process_section(session: dict, image_bytes: bytes,
     session["html"] = (
         session["scaffold_open"] + session["sections_html"] + session["scaffold_close"]
     )
+
+    # Final safety sweep: substitute ANY known markers anywhere in assembled HTML
+    # (catches markers Gemini placed in scaffold/head/style blocks outside the sentinel fragment)
+    for marker_index, url in session["image_urls"].items():
+        placeholder = f"__IMG_{marker_index}__"
+        session["html"] = session["html"].replace(placeholder, url)
+    leftover_global = re.findall(r"__IMG_\d+__", session["html"])
+    if leftover_global:
+        log.warning("Unfilled markers remain in assembled HTML: %s", leftover_global)
+
     session["image_count"] = base_index + len(new_images)
     session["section_count"] += 1
 

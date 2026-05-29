@@ -42,6 +42,10 @@ Desktop.ini
 output_scrapers/
 **/output_scrapers/
 
+# Ignore output_scrapes folder in any directory
+output_scrapes/
+**/output_scrapes/
+
 # Node
 node_modules/
 npm-debug.log
