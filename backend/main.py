@@ -21,7 +21,7 @@ from fastapi.responses import FileResponse, HTMLResponse, Response
 load_dotenv()
 
 from backend.gemini_openai import GeminiSession, build_client  # noqa: E402
-from backend.s3 import upload_image  # noqa: E402
+from backend.s3 import upload_html, upload_image  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 log = logging.getLogger("landing-builder")
@@ -46,8 +46,19 @@ FRONTEND_INDEX = ROOT / "frontend" / "index.html"
 # Shared orchestration helpers (used by both FastAPI endpoint and CLI)
 # ---------------------------------------------------------------------------
 
-def create_session_state() -> dict:
-    """Build a fresh session dict for one landing-page job."""
+def create_session_state(
+    s3_bucket: str | None = None,
+    s3_folder: str | None = None,
+) -> dict:
+    """Build a fresh session dict for one landing-page job.
+
+    Args:
+        s3_bucket: Target S3 bucket for images + final HTML.
+                   Defaults to S3_BUCKET env var when None (FastAPI / legacy path).
+        s3_folder: Key prefix for this job (e.g. "pasta").
+                   Images land at {s3_folder}/images/<uuid>.png.
+                   Defaults to "landing-builder" when None.
+    """
     return {
         "gemini": GeminiSession(_gemini_client),
         "html": "",
@@ -57,6 +68,8 @@ def create_session_state() -> dict:
         "scaffold_open": "",    # everything before <!-- SECTION_START --> in section 1
         "scaffold_close": "",   # everything after <!-- SECTION_END --> in section 1
         "sections_html": "",    # accumulated fragment content between sentinels
+        "s3_bucket": s3_bucket,         # None → falls back to S3_BUCKET env var
+        "s3_folder": s3_folder,         # None → uses default "landing-builder" prefix
     }
 
 
@@ -131,6 +144,14 @@ async def process_section(session: dict, image_bytes: bytes,
 
     # ── Image generation + S3 upload (parallel) ───────────────────────────
     if new_images:
+        # Determine upload destination for this job's images
+        img_bucket = session.get("s3_bucket")   # None → upload_image uses S3_BUCKET env var
+        img_prefix = (
+            f"{session['s3_folder']}/images"
+            if session.get("s3_folder")
+            else "landing-builder"
+        )
+
         async def _gen_and_upload(offset: int, spec: dict) -> tuple[int, str]:
             img_bytes = await loop.run_in_executor(
                 executor,
@@ -138,7 +159,16 @@ async def process_section(session: dict, image_bytes: bytes,
                 spec["prompt"],
                 spec.get("aspect_ratio", "1:1"),
             )
-            url = await loop.run_in_executor(executor, upload_image, img_bytes, "png")
+            url = await loop.run_in_executor(
+                executor,
+                functools.partial(
+                    upload_image,
+                    img_bytes,
+                    "png",
+                    img_bucket,
+                    img_prefix,
+                ),
+            )
             return base_index + offset, url
 
         try:

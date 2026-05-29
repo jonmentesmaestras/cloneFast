@@ -565,31 +565,52 @@ class AgenteScraper:
 # FULL CLONE ORCHESTRATOR
 # =====================================================================
 
-async def clonar_landing_completa(url: str, headless: bool = False) -> str:
+async def clonar_landing_completa(
+    url: str,
+    bucket: str,
+    folder: str | None = None,
+    headless: bool = False,
+) -> str:
     """Scrape a landing page URL and clone it section-by-section via Gemini + OpenAI.
 
     Phase A — Playwright scrapes the page and saves per-section PNG crops.
     Phase B — Each crop is fed sequentially through the Gemini/OpenAI pipeline.
-    Phase C — Assembled HTML is written to <task_folder>/landing.html.
+              Images are uploaded to s3://{bucket}/{folder}/images/ at generation time.
+    Phase C — Assembled HTML is written locally as index.html and deployed to
+              s3://{bucket}/{folder}/index.html.
 
-    Returns the absolute path to the generated HTML file.
+    Args:
+        url:      Landing page to clone.
+        bucket:   Target S3 bucket name.
+        folder:   Key prefix / subfolder inside the bucket (e.g. "pasta").
+                  Defaults to the scraper's task UUID so every run is isolated.
+        headless: Run Playwright headlessly (default False for visibility).
+
+    Returns:
+        Versioned public URL:
+        https://{bucket}.s3.us-east-1.amazonaws.com/{folder}/index.html?v={timestamp}
 
     CLI usage:
-        python -m backend.scraper_del_agente_de_escaneo https://example.com/landing
+        python -m backend.scraper_del_agente_de_escaneo <url> --bucket my-bucket [--folder pasta] [--headless]
     """
     # Lazy import keeps the scraper usable standalone without backend installed
     from backend.main import create_session_state, process_section, _executor
+    from backend.s3 import upload_html
 
     # ── Phase A: scrape ───────────────────────────────────────────────────
-    print(f"\n[Clone] ═══ FASE 1/2 — ESCANEO ═══")
+    print(f"\n[Clone] ═══ FASE 1/3 — ESCANEO ═══")
     print(f"[Clone] URL: {url}")
     agente = AgenteScraper(url, headless=headless)
     secciones = await agente.inicializar_y_escanear()
     print(f"[Clone] Scraper produjo {len(secciones)} secciones")
 
+    # Resolve folder: default to scraper's task UUID for isolation
+    resolved_folder = folder if folder else agente.task_id
+    print(f"[Clone] Bucket: {bucket}  |  Folder: {resolved_folder}")
+
     # ── Phase B: clone sequentially (GeminiSession is stateful) ──────────
-    print(f"\n[Clone] ═══ FASE 2/2 — CLONADO ═══")
-    session = create_session_state()
+    print(f"\n[Clone] ═══ FASE 2/3 — CLONADO ═══")
+    session = create_session_state(s3_bucket=bucket, s3_folder=resolved_folder)
 
     for i, sec in enumerate(secciones, 1):
         if not sec.screenshot_path or not os.path.exists(sec.screenshot_path):
@@ -613,19 +634,27 @@ async def clonar_landing_completa(url: str, headless: bool = False) -> str:
             print(f"[Clone]   ✗ Error en sección {i}: {e} — continuando con la siguiente")
             continue
 
-    # ── Phase C: write output ─────────────────────────────────────────────
-    output_html_path = os.path.join(agente.output_path, "landing.html")
+    # ── Phase C: save locally + deploy to S3 ─────────────────────────────
+    print(f"\n[Clone] ═══ FASE 3/3 — DEPLOY ═══")
+
+    # Local copy as index.html (useful for inspection/debugging)
+    output_html_path = os.path.join(agente.output_path, "index.html")
     with open(output_html_path, "w", encoding="utf-8") as f:
         f.write(session["html"])
-
     abs_path = os.path.abspath(output_html_path)
+    print(f"[Clone] HTML local: {abs_path}")
+
+    # Upload to S3 and get versioned public URL
+    public_url = upload_html(session["html"], bucket=bucket, folder=resolved_folder)
+
     print(f"\n[Clone] ══════════════════════════════════════════")
     print(f"[Clone] ✓ COMPLETADO")
     print(f"[Clone] Secciones clonadas  : {session['section_count']}")
     print(f"[Clone] Imágenes generadas  : {session['image_count']}")
-    print(f"[Clone] HTML output         : {abs_path}")
+    print(f"[Clone] HTML local          : {abs_path}")
+    print(f"[Clone] URL pública         : {public_url}")
     print(f"[Clone] ══════════════════════════════════════════")
-    return abs_path
+    return public_url
 
 
 # =====================================================================
@@ -634,11 +663,35 @@ async def clonar_landing_completa(url: str, headless: bool = False) -> str:
 
 async def main():
     import sys
+
     args = sys.argv[1:]
+
+    # ── Flags ─────────────────────────────────────────────────────────────
     headless = "--headless" in args
+
+    def _flag(name: str) -> str | None:
+        """Return the value after --name, or None if not present."""
+        for i, a in enumerate(args):
+            if a == name and i + 1 < len(args):
+                return args[i + 1]
+            if a.startswith(f"{name}="):
+                return a.split("=", 1)[1]
+        return None
+
+    bucket = _flag("--bucket")
+    folder = _flag("--folder")  # optional — defaults to task UUID inside the orchestrator
+
+    # ── Positional: URL ───────────────────────────────────────────────────
     positional = [a for a in args if not a.startswith("--")]
     url = positional[0] if positional else "https://guiaspracticaspro.online/20protocolos-4/"
-    await clonar_landing_completa(url, headless=headless)
+
+    # ── Validate ──────────────────────────────────────────────────────────
+    if not bucket:
+        print("[Error] --bucket is required.")
+        print("Usage: python -m backend.scraper_del_agente_de_escaneo <url> --bucket <bucket-name> [--folder <subfolder>] [--headless]")
+        sys.exit(1)
+
+    await clonar_landing_completa(url, bucket=bucket, folder=folder, headless=headless)
 
 if __name__ == "__main__":
     asyncio.run(main())
