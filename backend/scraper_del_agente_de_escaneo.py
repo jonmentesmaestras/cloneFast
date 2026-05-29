@@ -3,9 +3,33 @@ import uuid
 import asyncio
 import re
 import json
+from urllib.parse import urlparse
 from typing import List, Optional, Dict, Any
 from pydantic import BaseModel, Field
 from playwright.async_api import async_playwright, Page, ElementHandle
+
+
+# =====================================================================
+# SCRAPE ERROR — structured error for API + CLI
+# =====================================================================
+
+class ScrapeError(Exception):
+    """Raised when the scraper detects a page-access problem.
+
+    Attributes:
+        message:    Human-readable description of the problem.
+        error_code: Machine-readable code for the API error response.
+    """
+    def __init__(self, message: str, error_code: str):
+        super().__init__(message)
+        self.message = message
+        self.error_code = error_code
+
+
+# Keyword sets for basic page-access heuristics
+_CAPTCHA_KEYWORDS = {"captcha", "recaptcha", "hcaptcha", "verify you are human", "i'm not a robot"}
+_BLOCKED_KEYWORDS = {"access denied", "403 forbidden", "cloudflare", "attention required",
+                     "this site is protected", "you have been blocked", "bot detected"}
 
 # =====================================================================
 # DATA MODELS (Pydantic V2 & V1 Compatible)
@@ -120,8 +144,60 @@ class AgenteScraper:
             await page.add_init_script("delete navigator.__proto__.webdriver;")
             
             print(f"[Fase 1] Connecting securely to: {self.target_url}")
-            await page.goto(self.target_url, wait_until="networkidle", timeout=90000)
-            
+            try:
+                response = await page.goto(self.target_url, wait_until="networkidle", timeout=90000)
+            except Exception as nav_err:
+                msg = f"Navigation timeout or connection error: {nav_err}"
+                print(f"[Scraper][ERROR] {msg}")
+                await browser.close()
+                raise ScrapeError(msg, "NAV_TIMEOUT")
+
+            # ── HTTP status check ─────────────────────────────────────────
+            if response is not None:
+                status = response.status
+                if status == 404:
+                    msg = f"Page returned HTTP 404 Not Found: {self.target_url}"
+                    print(f"[Scraper][ERROR] {msg}")
+                    await browser.close()
+                    raise ScrapeError(msg, "HTTP_404")
+                elif status >= 500:
+                    msg = f"Page returned HTTP {status} server error: {self.target_url}"
+                    print(f"[Scraper][ERROR] {msg}")
+                    await browser.close()
+                    raise ScrapeError(msg, "HTTP_5XX")
+                elif status >= 400:
+                    msg = f"Page returned HTTP {status} client error: {self.target_url}"
+                    print(f"[Scraper][ERROR] {msg}")
+                    await browser.close()
+                    raise ScrapeError(msg, "HTTP_4XX")
+
+            # ── Cross-domain redirect check ───────────────────────────────
+            original_host = urlparse(self.target_url).netloc.lower().lstrip("www.")
+            final_host = urlparse(page.url).netloc.lower().lstrip("www.")
+            if final_host and original_host and final_host != original_host:
+                msg = f"Page redirected to a different domain: {self.target_url} → {page.url}"
+                print(f"[Scraper][ERROR] {msg}")
+                await browser.close()
+                raise ScrapeError(msg, "REDIRECT")
+
+            # ── Captcha / bot-wall heuristics ─────────────────────────────
+            try:
+                body_text = (await page.inner_text("body")).lower()
+                if any(kw in body_text for kw in _CAPTCHA_KEYWORDS):
+                    msg = f"Captcha or bot challenge detected on: {self.target_url}"
+                    print(f"[Scraper][ERROR] {msg}")
+                    await browser.close()
+                    raise ScrapeError(msg, "CAPTCHA")
+                if any(kw in body_text for kw in _BLOCKED_KEYWORDS):
+                    msg = f"Access blocked or firewall detected on: {self.target_url}"
+                    print(f"[Scraper][ERROR] {msg}")
+                    await browser.close()
+                    raise ScrapeError(msg, "BLOCKED")
+            except ScrapeError:
+                raise
+            except Exception:
+                pass  # body text check is best-effort
+
             # Natural human-like scrolling and lazy asset loading
             await self._disparar_lazy_loading(page)
             
@@ -570,7 +646,7 @@ async def clonar_landing_completa(
     bucket: str,
     folder: str | None = None,
     headless: bool = False,
-) -> str:
+) -> dict:
     """Scrape a landing page URL and clone it section-by-section via Gemini + OpenAI.
 
     Phase A — Playwright scrapes the page and saves per-section PNG crops.
@@ -584,11 +660,18 @@ async def clonar_landing_completa(
         bucket:   Target S3 bucket name.
         folder:   Key prefix / subfolder inside the bucket (e.g. "pasta").
                   Defaults to the scraper's task UUID so every run is isolated.
-        headless: Run Playwright headlessly (default False for visibility).
+        headless: Run Playwright headlessly (default True for API, False for CLI testing).
 
     Returns:
-        Versioned public URL:
-        https://{bucket}.s3.us-east-1.amazonaws.com/{folder}/index.html?v={timestamp}
+        {
+            "new_clone_url":    versioned public URL of the deployed index.html,
+            "cloned_sections":  number of sections successfully cloned,
+            "imaged_generated": number of images generated and uploaded,
+        }
+
+    Raises:
+        ScrapeError: when the page cannot be reached or is blocked.
+        RuntimeError: on Gemini/OpenAI/S3 pipeline failures.
 
     CLI usage:
         python -m backend.scraper_del_agente_de_escaneo <url> --bucket my-bucket [--folder pasta] [--headless]
@@ -607,6 +690,12 @@ async def clonar_landing_completa(
     # Resolve folder: default to scraper's task UUID for isolation
     resolved_folder = folder if folder else agente.task_id
     print(f"[Clone] Bucket: {bucket}  |  Folder: {resolved_folder}")
+
+    # ── Guard: scraper found sections? ───────────────────────────────────
+    if not secciones:
+        msg = f"Scraper found 0 sections on: {url}. The page may be empty, JS-only, or blocked."
+        print(f"[Clone][ERROR] {msg}")
+        raise ScrapeError(msg, "NO_SECTIONS")
 
     # ── Phase B: clone sequentially (GeminiSession is stateful) ──────────
     print(f"\n[Clone] ═══ FASE 2/3 — CLONADO ═══")
@@ -647,14 +736,20 @@ async def clonar_landing_completa(
     # Upload to S3 and get versioned public URL
     public_url = upload_html(session["html"], bucket=bucket, folder=resolved_folder)
 
+    result = {
+        "new_clone_url":    public_url,
+        "cloned_sections":  session["section_count"],
+        "imaged_generated": session["image_count"],
+    }
+
     print(f"\n[Clone] ══════════════════════════════════════════")
     print(f"[Clone] ✓ COMPLETADO")
-    print(f"[Clone] Secciones clonadas  : {session['section_count']}")
-    print(f"[Clone] Imágenes generadas  : {session['image_count']}")
+    print(f"[Clone] Secciones clonadas  : {result['cloned_sections']}")
+    print(f"[Clone] Imágenes generadas  : {result['imaged_generated']}")
     print(f"[Clone] HTML local          : {abs_path}")
-    print(f"[Clone] URL pública         : {public_url}")
+    print(f"[Clone] URL pública         : {result['new_clone_url']}")
     print(f"[Clone] ══════════════════════════════════════════")
-    return public_url
+    return result
 
 
 # =====================================================================
@@ -691,7 +786,15 @@ async def main():
         print("Usage: python -m backend.scraper_del_agente_de_escaneo <url> --bucket <bucket-name> [--folder <subfolder>] [--headless]")
         sys.exit(1)
 
-    await clonar_landing_completa(url, bucket=bucket, folder=folder, headless=headless)
+    try:
+        result = await clonar_landing_completa(url, bucket=bucket, folder=folder, headless=headless)
+        print(f"\n[CLI] Result: {json.dumps(result, indent=2)}")
+    except ScrapeError as e:
+        print(json.dumps({"message": e.message, "error_code": e.error_code}, indent=2))
+        sys.exit(1)
+    except Exception as e:
+        print(json.dumps({"message": str(e), "error_code": "UNKNOWN"}, indent=2))
+        sys.exit(1)
 
 if __name__ == "__main__":
     asyncio.run(main())

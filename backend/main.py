@@ -1,6 +1,10 @@
 """FastAPI app: orchestrates the section-by-section landing-page build.
 
-Single-user PoC — sessions live in memory and reset on restart.
+Exposes both:
+  - Legacy section-by-section UI API  (/api/session/*)
+  - New async clone API               (POST /api/clone, GET /api/clone/{job_id})
+
+Sessions and clone jobs live in memory and reset on restart.
 """
 
 from __future__ import annotations
@@ -9,14 +13,17 @@ import asyncio
 import functools
 import logging
 import re
+import sys
 import uuid
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from typing import Optional
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, HTMLResponse, Response
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response
+from pydantic import BaseModel
 
 load_dotenv()
 
@@ -36,7 +43,8 @@ app.add_middleware(
 )
 
 _gemini_client = build_client()
-_executor = ThreadPoolExecutor(max_workers=8)
+_executor = ThreadPoolExecutor(max_workers=8)              # Gemini / OpenAI / S3 blocking calls
+_clone_executor = ThreadPoolExecutor(max_workers=2)        # outer clone-job threads (own event loop)
 
 ROOT = Path(__file__).parent.parent
 FRONTEND_INDEX = ROOT / "frontend" / "index.html"
@@ -320,6 +328,144 @@ async def session_add_section(
         raise HTTPException(status_code=502, detail=str(e))
 
 
+# ---------------------------------------------------------------------------
+# Clone Job API  —  POST /api/clone  +  GET /api/clone/{job_id}
+# ---------------------------------------------------------------------------
+
+# Error-code → HTTP status mapping
+_ERROR_CODE_TO_STATUS: dict[str, int] = {
+    "HTTP_404":   404,
+    "HTTP_4XX":   422,
+    "HTTP_5XX":   502,
+    "REDIRECT":   422,
+    "CAPTCHA":    422,
+    "BLOCKED":    422,
+    "NAV_TIMEOUT": 504,
+    "NO_SECTIONS": 422,
+    "UNKNOWN":    500,
+}
+
+# In-memory job store  {job_id -> job_dict}
+_clone_jobs: dict[str, dict] = {}
+
+
+class CloneRequest(BaseModel):
+    url: str
+    bucketName: str
+    folderName: Optional[str] = None   # defaults to task UUID when omitted
+
+
+def _run_clone_blocking(url: str, bucket: str, folder: Optional[str]) -> dict:
+    """Run the async clone pipeline on a dedicated event loop in a worker thread.
+
+    On Windows, Playwright launches the browser as a subprocess, which requires
+    asyncio's ProactorEventLoop. Uvicorn installs a SelectorEventLoop (no
+    subprocess support → NotImplementedError), so we cannot run Playwright on the
+    request loop. Instead we create our own loop here (Proactor on Windows) and
+    drive the whole pipeline to completion synchronously from this thread.
+    """
+    from backend.scraper_del_agente_de_escaneo import clonar_landing_completa
+
+    if sys.platform == "win32":
+        loop = asyncio.ProactorEventLoop()
+    else:
+        loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    try:
+        return loop.run_until_complete(
+            clonar_landing_completa(url=url, bucket=bucket, folder=folder, headless=True)
+        )
+    finally:
+        try:
+            loop.run_until_complete(loop.shutdown_asyncgens())
+        finally:
+            asyncio.set_event_loop(None)
+            loop.close()
+
+
+async def _run_clone_job(job_id: str, url: str, bucket: str, folder: Optional[str]) -> None:
+    """Background task: runs the full clone pipeline and writes result into _clone_jobs."""
+    # Lazy import avoids circular dependency (scraper imports backend.main lazily too)
+    from backend.scraper_del_agente_de_escaneo import ScrapeError
+
+    _clone_jobs[job_id]["status"] = "running"
+    log.info("Clone job %s started — url=%s bucket=%s folder=%s", job_id[:8], url, bucket, folder)
+
+    loop = asyncio.get_running_loop()
+    try:
+        # Offload to a worker thread with its own Proactor loop (Playwright needs it on Windows).
+        result = await loop.run_in_executor(
+            _clone_executor,
+            functools.partial(_run_clone_blocking, url, bucket, folder),
+        )
+        _clone_jobs[job_id].update({
+            "status": "completed",
+            **result,          # new_clone_url, cloned_sections, imaged_generated
+        })
+        log.info("Clone job %s completed — url=%s", job_id[:8], result.get("new_clone_url"))
+
+    except ScrapeError as e:
+        log.warning("Clone job %s scrape error [%s]: %s", job_id[:8], e.error_code, e.message)
+        _clone_jobs[job_id].update({
+            "status": "failed",
+            "message": e.message,
+            "error_code": e.error_code,
+        })
+    except Exception as e:
+        log.exception("Clone job %s unexpected failure", job_id[:8])
+        _clone_jobs[job_id].update({
+            "status": "failed",
+            "message": str(e),
+            "error_code": "UNKNOWN",
+        })
+
+
+@app.post("/api/clone", status_code=202)
+async def clone_start(req: CloneRequest):
+    """Start an async clone job. Returns immediately with a job_id to poll."""
+    job_id = uuid.uuid4().hex
+    _clone_jobs[job_id] = {"status": "pending"}
+    asyncio.create_task(
+        _run_clone_job(job_id, req.url, req.bucketName, req.folderName)
+    )
+    log.info("Clone job %s queued — url=%s bucket=%s", job_id[:8], req.url, req.bucketName)
+    return {"job_id": job_id, "status": "pending"}
+
+
+@app.get("/api/clone/{job_id}")
+async def clone_status(job_id: str):
+    """Poll the status of a clone job."""
+    job = _clone_jobs.get(job_id)
+    if job is None:
+        raise HTTPException(status_code=404, detail="Job not found")
+
+    status = job["status"]
+
+    if status in ("pending", "running"):
+        return {"job_id": job_id, "status": status}
+
+    if status == "completed":
+        return {
+            "job_id":           job_id,
+            "status":           "completed",
+            "new_clone_url":    job["new_clone_url"],
+            "cloned_sections":  job["cloned_sections"],
+            "imaged_generated": job["imaged_generated"],
+        }
+
+    # failed
+    http_status = _ERROR_CODE_TO_STATUS.get(job.get("error_code", "UNKNOWN"), 500)
+    return JSONResponse(
+        status_code=http_status,
+        content={
+            "job_id":     job_id,
+            "status":     "failed",
+            "message":    job.get("message", "Unknown error"),
+            "error_code": job.get("error_code", "UNKNOWN"),
+        },
+    )
+
+
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("backend.main:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("backend.main:app", host="127.0.0.1", port=5007, reload=True)
