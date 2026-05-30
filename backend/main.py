@@ -19,6 +19,186 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Optional
 
+# ── CSS namespacing helpers (Fix C2) ─────────────────────────────────────────
+
+# At-rules whose entire block must pass through untouched (no selector prefixing)
+_CSS_PASSTHROUGH_AT = re.compile(
+    r"@(?:keyframes|font-face|page|import|charset|namespace|counter-style|font-feature-values)\b",
+    re.IGNORECASE,
+)
+# At-rules that wrap real selector blocks (recurse inside them)
+_CSS_CONDITIONAL_AT = re.compile(
+    r"@(?:media|supports|document|layer)\b",
+    re.IGNORECASE,
+)
+# Tags/pseudo-selectors that should map to the scope root itself
+_CSS_ROOT_SELECTORS = re.compile(
+    r"^(html|body|:root|\*)$",
+    re.IGNORECASE,
+)
+
+
+def _prefix_selector_list(selector_list: str, scope: str) -> str:
+    """Prefix every comma-separated selector with *scope*.
+
+    Selectors that match html/body/:root/* become *scope* itself so that
+    resets stay scoped to the section wrapper rather than leaking globally.
+    """
+    out = []
+    for sel in selector_list.split(","):
+        s = sel.strip()
+        if not s:
+            continue
+        if _CSS_ROOT_SELECTORS.match(s):
+            out.append(scope)
+        else:
+            out.append(f"{scope} {s}")
+    return ", ".join(out)
+
+
+def namespace_css(css: str, scope: str) -> str:
+    """Rewrite all selectors in *css* so they are descendants of *scope*.
+
+    Uses a brace-depth scanner — no external CSS-parser dependency.
+    Handles:
+    - Regular rules: `selector { … }`
+    - Conditional at-rules: `@media(…) { selector { … } }`
+    - Passthrough at-rules: `@keyframes`, `@font-face`, `@import`, etc. (untouched)
+    - Comma-separated selector lists
+    - Nested braces inside conditional blocks
+    """
+    result = []
+    i = 0
+    n = len(css)
+
+    def scan_block(start: int, scope: str, depth: int = 0) -> int:
+        """Scan from *start*, emit into *result*, return index after closing }."""
+        j = start
+        prelude_start = j  # start of current prelude (selector / at-rule text)
+
+        while j < n:
+            ch = css[j]
+
+            if ch == "{":
+                prelude = css[prelude_start:j].strip()
+
+                if depth == 0:
+                    # Top-level rule
+                    if _CSS_PASSTHROUGH_AT.match(prelude):
+                        # e.g. @keyframes — copy verbatim to closing brace (may be nested)
+                        brace_depth = 1
+                        result.append(f"{prelude} {{")
+                        j += 1
+                        while j < n and brace_depth > 0:
+                            if css[j] == "{":
+                                brace_depth += 1
+                            elif css[j] == "}":
+                                brace_depth -= 1
+                                if brace_depth == 0:
+                                    result.append("}")
+                                    j += 1
+                                    break
+                            result.append(css[j])
+                            j += 1
+                    elif _CSS_CONDITIONAL_AT.match(prelude):
+                        # e.g. @media — emit the condition, then recurse inside
+                        result.append(f"{prelude} {{")
+                        j = scan_block(j + 1, scope, depth=1)
+                        result.append("}")
+                    else:
+                        # Regular selector rule
+                        if prelude:
+                            result.append(f"{_prefix_selector_list(prelude, scope)} {{")
+                        else:
+                            result.append("{")
+                        # Copy rule body verbatim until its closing brace
+                        brace_depth = 1
+                        j += 1
+                        while j < n and brace_depth > 0:
+                            if css[j] == "{":
+                                brace_depth += 1
+                            elif css[j] == "}":
+                                brace_depth -= 1
+                                if brace_depth == 0:
+                                    result.append("}")
+                                    j += 1
+                                    break
+                            result.append(css[j])
+                            j += 1
+
+                else:
+                    # Depth ≥ 1 (inside a conditional at-rule) — prefix selector
+                    if prelude:
+                        result.append(f"{_prefix_selector_list(prelude, scope)} {{")
+                    else:
+                        result.append("{")
+                    brace_depth = 1
+                    j += 1
+                    while j < n and brace_depth > 0:
+                        if css[j] == "{":
+                            brace_depth += 1
+                        elif css[j] == "}":
+                            brace_depth -= 1
+                            if brace_depth == 0:
+                                result.append("}")
+                                j += 1
+                                break
+                        result.append(css[j])
+                        j += 1
+
+                prelude_start = j
+
+            elif ch == "}" and depth > 0:
+                # Closing brace of the containing conditional at-rule
+                return j + 1
+
+            else:
+                j += 1
+
+        return j
+
+    scan_block(0, scope)
+    return "".join(result)
+
+
+# HTML style-block pattern (lazy, handles multiline)
+_STYLE_BLOCK_RE = re.compile(r"<style[^>]*>(.*?)</style>", re.DOTALL | re.IGNORECASE)
+# Tags that must not appear inside a section fragment
+_DOC_WRAPPER_RE = re.compile(
+    r"<!DOCTYPE[^>]*>|<html[^>]*>|</html>|<head[^>]*>.*?</head>|<body[^>]*>|</body>",
+    re.DOTALL | re.IGNORECASE,
+)
+
+
+def namespace_fragment(fragment: str, section_id: str) -> str:
+    """Wrap *fragment* in a scoped div and namespace all its <style> blocks.
+
+    Steps:
+    1. Strip any document-wrapper tags (<!DOCTYPE>, <html>, <head>…</head>, <body>).
+    2. Extract every <style>…</style> block and namespace its CSS.
+    3. Wrap remaining markup in <div id="{section_id}">.
+    4. Re-insert the scoped <style> blocks inside the wrapper (before content).
+    """
+    scope = f"#{section_id}"
+
+    # 1. Strip document wrappers (only present when sentinel was missing)
+    clean = _DOC_WRAPPER_RE.sub("", fragment).strip()
+
+    # 2. Extract and namespace <style> blocks
+    scoped_styles: list[str] = []
+
+    def _namespace_style(m: re.Match) -> str:
+        raw_css = m.group(1)
+        scoped = namespace_css(raw_css, scope)
+        scoped_styles.append(f"<style>{scoped}</style>")
+        return ""  # remove from markup
+
+    markup = _STYLE_BLOCK_RE.sub(_namespace_style, clean).strip()
+
+    # 3+4. Assemble: wrapper → scoped styles → content
+    style_block = "\n".join(scoped_styles)
+    return f'<div id="{section_id}">\n{style_block}\n{markup}\n</div>'
+
 from dotenv import load_dotenv
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
@@ -110,27 +290,41 @@ async def process_section(session: dict, image_bytes: bytes,
     base_index = session["image_count"]
     is_first_section = session["section_count"] == 0
 
-    # ── Sentinel parsing ──────────────────────────────────────────────────
+    # ── Sentinel parsing ─────────────────────────────────────────────────────
     START_SENTINEL = "<!-- SECTION_START -->"
-    END_SENTINEL = "<!-- SECTION_END -->"
+    END_SENTINEL   = "<!-- SECTION_END -->"
     raw_html = section.html
+
+    # Minimal scaffold used when section 1 omits the sentinels (Fix C1)
+    _MINIMAL_SCAFFOLD_OPEN  = (
+        '<!DOCTYPE html><html lang="es"><head>'
+        '<meta charset="utf-8">'
+        '<meta name="viewport" content="width=device-width, initial-scale=1">'
+        '<title>Landing</title>'
+        '</head><body>'
+    )
+    _MINIMAL_SCAFFOLD_CLOSE = "</body></html>"
 
     if START_SENTINEL in raw_html and END_SENTINEL in raw_html:
         start_idx = raw_html.index(START_SENTINEL)
-        end_idx = raw_html.index(END_SENTINEL)
-        fragment = raw_html[start_idx + len(START_SENTINEL):end_idx]
+        end_idx   = raw_html.index(END_SENTINEL)
+        fragment  = raw_html[start_idx + len(START_SENTINEL):end_idx]
         if is_first_section:
-            session["scaffold_open"] = raw_html[:start_idx]
+            session["scaffold_open"]  = raw_html[:start_idx]
             session["scaffold_close"] = raw_html[end_idx + len(END_SENTINEL):]
             log.info("Scaffold captured: open=%d chars, close=%d chars",
                      len(session["scaffold_open"]), len(session["scaffold_close"]))
     else:
-        log.warning("Sentinel comments missing — using full response as fragment for section %d",
-                    session["section_count"] + 1)
-        fragment = raw_html
+        log.warning("Sentinel comments missing for section %d", session["section_count"] + 1)
         if is_first_section:
-            session["scaffold_open"] = ""
-            session["scaffold_close"] = ""
+            # FIX C1: synthesise a minimal valid scaffold so subsequent sections
+            # are never appended after </html>. Strip any doc-wrapper tags from
+            # the fragment (namespace_fragment will clean them too, but be explicit).
+            session["scaffold_open"]  = _MINIMAL_SCAFFOLD_OPEN
+            session["scaffold_close"] = _MINIMAL_SCAFFOLD_CLOSE
+            log.warning("Section 1 sentinel missing — synthesised minimal scaffold")
+        # Use the full raw response as the fragment (doc wrappers stripped by namespace_fragment)
+        fragment = raw_html
 
     # ── Diagnostic logging ────────────────────────────────────────────────
     log.info("=== DIAGNOSTIC: Section #%d ===", session["section_count"] + 1)
@@ -199,6 +393,16 @@ async def process_section(session: dict, image_bytes: bytes,
     leftover = re.findall(r"__IMG_\d+__", fragment)
     if leftover:
         log.warning("Unfilled placeholders remain in fragment: %s", leftover)
+
+    # ── FIX C2: deterministic CSS namespacing ─────────────────────────────
+    # Wrap this fragment in a unique scoped div and rewrite all its <style>
+    # selectors so they only apply inside that div.  This prevents global
+    # `section{}`, `body{}`, `.container{}` rules in one section from
+    # clobbering every other section on the page — regardless of what Gemini
+    # emits.  Marker substitution has already run so image URLs are preserved.
+    section_id = f"pulpo-sec-{session['section_count'] + 1}"
+    fragment = namespace_fragment(fragment, section_id)
+    log.info("Section %d namespaced under #%s", session["section_count"] + 1, section_id)
 
     # ── Assemble full HTML ────────────────────────────────────────────────
     session["sections_html"] += fragment

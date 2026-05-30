@@ -358,6 +358,15 @@ class AgenteScraper:
             });
 
             if (rootCandidates.length >= 3) {
+                // FIX B: sort by absolute vertical position to restore top-to-bottom document order.
+                // Without this, bucketing by selector type scrambles the visual order.
+                rootCandidates.sort((a, b) => {
+                    const ra = a.getBoundingClientRect();
+                    const rb = b.getBoundingClientRect();
+                    const ta = ra.top + window.scrollY;
+                    const tb = rb.top + window.scrollY;
+                    return (ta - tb) || (ra.left - rb.left);
+                });
                 return rootCandidates.map((el, i) => getElementDetails(el, i));
             }
 
@@ -391,44 +400,53 @@ class AgenteScraper:
         print(f"[Scraper] Analysing {len(lista_secciones_meta)} segmented segments.")
         secciones_detectadas: List[LandingSection] = []
 
+        # FIX A: counter incremented only after a candidate passes ALL guards,
+        # so filenames are always seccion_1…N with no gaps.
+        accepted = 0
+
         for meta in lista_secciones_meta:
             try:
                 idx_str = meta["idx"]
                 id_clean = meta["id_propuesto"]
-                
+
                 # Fetch element cleanly via the annotated layout index
                 el = await page.query_selector(f"*[data-pulpo-idx='{idx_str}']")
                 if not el:
                     continue
-                    
+
+                # --- All cheap guards BEFORE the expensive screenshot ---
                 box = await el.bounding_box()
                 if not box or box["height"] < 80:
                     continue
-                
+
+                hex_fondo = await self._obtener_color_fondo_efectivo(el)
+                texto_original = await el.inner_text()
+                texto_original_clean = texto_original.strip()
+
+                urls_imagenes = await self._ejecutar_escaneo_profundo_imagenes(el)
+
+                # Acceptance guard: skip near-empty sections
+                if len(texto_original_clean) < 10 and not urls_imagenes:
+                    continue
+
+                # --- Candidate accepted: assign sequential filename ---
+                accepted += 1
+                sec_screenshot_path = os.path.join(self.assets_path, f"seccion_{accepted}.png")
+
                 # Dynamic Crop Screen Saving
-                sec_screenshot_path = os.path.join(self.assets_path, f"seccion_{idx_str}.png")
                 try:
                     await el.scroll_into_view_if_needed()
                     await page.wait_for_timeout(300)
-                    # Refresh lazy images right before capturing elements
+                    # Refresh lazy images right before capturing the element
                     await self._forzar_carga_de_imagenes_lazy(page)
                     await page.wait_for_timeout(200)
                     await el.screenshot(path=sec_screenshot_path)
                 except Exception as e_snap:
                     print(f"[Warning] Failed to crop capture section {id_clean}: {e_snap}")
-                
-                hex_fondo = await self._obtener_color_fondo_efectivo(el)
-                texto_original = await el.inner_text()
-                texto_original_clean = texto_original.strip()
-                
-                urls_imagenes = await self._ejecutar_escaneo_profundo_imagenes(el)
-                
-                if len(texto_original_clean) < 10 and not urls_imagenes:
-                    continue
-                
+
                 tipo_seccion = await self._determinar_tipo_seccion_avanzado(el, texto_original_clean, urls_imagenes)
                 es_mockup = await self._clasificar_mockups_avanzado(urls_imagenes)
-                
+
                 es_testimonio_screenshot = False
                 if tipo_seccion == "testimonios":
                     es_testimonio_screenshot = any(
@@ -438,7 +456,7 @@ class AgenteScraper:
 
                 faq_items = await self._intentar_extraer_faqs(el, tipo_seccion)
                 testimonios = await self._intentar_extraer_testimonios_avanzados(el, tipo_seccion, urls_imagenes, es_testimonio_screenshot)
-                
+
                 # Strip the stamped attribute to keep DOM clean
                 await el.evaluate("(el) => el.removeAttribute('data-pulpo-idx')")
 
@@ -457,7 +475,7 @@ class AgenteScraper:
             except Exception as e:
                 print(f"[Warning] Segment parse fault on index {meta.get('idx', '?')}: {e}")
                 continue
-                
+
         return secciones_detectadas
 
     async def _ejecutar_escaneo_profundo_imagenes(self, el: ElementHandle) -> List[str]:
